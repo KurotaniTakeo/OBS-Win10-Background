@@ -1,5 +1,8 @@
 @echo off
 chcp 65001 >nul
+setlocal
+
+cd /d "%~dp0"
 title OBS 直播背景服务器
 color 0A
 echo.
@@ -15,7 +18,7 @@ echo.
 echo ================================================
 echo.
 
-node src/server.js
+node src\server.js
 
 echo.
 echo [信息] 服务器已停止
