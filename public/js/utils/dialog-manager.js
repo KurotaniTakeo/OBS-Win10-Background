@@ -32,9 +32,12 @@ class DialogManager {
     });
 
     // 处理 <segoe_icon> 标签（在其他规则之前处理）
-    html = html.replace(/<segoe_icon>([A-Fa-f0-9]+)<\/segoe_icon>/g, (match, code) => {
-      return `<span class="segoe-icon-wrapper">&#x${code};</span>`;
-    });
+    html = html.replace(
+      /<segoe_icon>([A-Fa-f0-9]+)<\/segoe_icon>/g,
+      (match, code) => {
+        return `<span class="segoe-icon-wrapper">&#x${code};</span>`;
+      },
+    );
 
     // 处理标题（从h4到h1，避免冲突）
     html = html.replace(/^#### (.+)$/gm, "<h4>$1</h4>");
@@ -396,7 +399,7 @@ class DialogManager {
    */
   static async showFirstLaunchModal(onConfirm) {
     try {
-      const response = await fetch("/README.md");
+      const response = await fetch("/docs/README.md");
       if (!response.ok) {
         throw new Error("无法加载帮助文档");
       }
@@ -430,7 +433,7 @@ class DialogManager {
    */
   static async showChangelogModal() {
     try {
-      const response = await fetch("/CHANGELOG.md");
+      const response = await fetch("/docs/CHANGELOG.md");
       if (!response.ok) {
         throw new Error("无法加载更新说明");
       }

@@ -57,7 +57,7 @@
 2. **克隆或下载项目**
 
    ```bash
-   git clone https://github.com/KurotaniTakeo/obs-win10-background.git
+   git clone https://github.com/KurotaniTakeo/OBS-Win10-Background.git
    ```
 
    或直接在Release处下载 ZIP 文件并解压

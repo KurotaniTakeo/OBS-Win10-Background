@@ -54,3 +54,7 @@ obs-studio/
 
 # 其他
 docs/
+!docs/README.md
+!docs/CHANGELOG.md
+src/config/
+!src/config/config.default.json

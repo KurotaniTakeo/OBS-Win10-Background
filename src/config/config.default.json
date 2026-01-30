@@ -12,5 +12,5 @@
   "windowTitleFont": "Segoe UI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif",
   "windowTitleFontSize": 18,
   "titleBarButtons": "&#xE921;,&#xE923;,&#xE8BB;",
-  "_comment": "配置文件示例。复制此文件为 config.json 并修改配置项。修改配置后在设置面板中保存会自动下载新的 config.json，替换项目文件并刷新页面即可生效。"
+  "_comment": "默认配置文件。用于恢复默认配置。"
 }
