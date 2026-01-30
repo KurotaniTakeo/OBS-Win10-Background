@@ -11,6 +11,7 @@ yarn.lock
 .idea/
 *.sublime-project
 *.sublime-workspace
+*.code-workspace
 *.swp
 *.swo
 *~
