@@ -66,6 +66,7 @@ class ConfigManager {
     ConfigApplier.applyConfig(this.config);
     this.initConfigShortcut();
     this.checkFirstLaunch();
+    this.checkForUpdates();
   }
 
   /**
@@ -157,6 +158,68 @@ class ConfigManager {
         this.config.isFirstLaunch = false;
         await this.saveConfig({ showNotification: false });
       });
+    }
+  }
+
+  /**
+   * 检查 GitHub Release 更新
+   */
+  async checkForUpdates({ manual = false } = {}) {
+    try {
+      const versionInfo = await this.apiService.getVersion();
+      if (!versionInfo || !versionInfo.version || !versionInfo.repo) {
+        if (manual) {
+          this.notificationManager.showUpdateStatusNotification({
+            title: "检测失败",
+            message: "无法获取版本信息，请检查服务器",
+            themeColor: this.config?.themeColor || "#0078d4",
+            isError: true,
+          });
+        }
+        return;
+      }
+
+      const versionLabel = document.getElementById("app-version");
+      if (versionLabel) {
+        versionLabel.textContent = versionInfo.version;
+      }
+
+      const themeColor = this.config?.themeColor || "#0078d4";
+
+      const result = await UpdateChecker.checkForUpdates({
+        currentVersion: versionInfo.version,
+        repo: versionInfo.repo,
+        notificationManager: this.notificationManager,
+        themeColor,
+        notifyOnUpdate: true,
+      });
+
+      if (manual) {
+        if (result?.status === "up-to-date") {
+          this.notificationManager.showUpdateStatusNotification({
+            title: "已是最新",
+            message: `当前版本 ${versionInfo.version} 已是最新版本`,
+            themeColor,
+          });
+        } else if (result?.status === "error") {
+          this.notificationManager.showUpdateStatusNotification({
+            title: "检测失败",
+            message: "无法连接更新服务，请稍后再试",
+            themeColor,
+            isError: true,
+          });
+        }
+      }
+    } catch (error) {
+      console.warn("⚠️ 更新检查异常:", error.message);
+      if (manual) {
+        this.notificationManager.showUpdateStatusNotification({
+          title: "检测失败",
+          message: "更新检查异常，请稍后再试",
+          themeColor: this.config?.themeColor || "#0078d4",
+          isError: true,
+        });
+      }
     }
   }
 

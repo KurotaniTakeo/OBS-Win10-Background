@@ -449,6 +449,13 @@ class EventBinder {
       });
     }
 
+    const checkUpdateBtn = document.getElementById("btn-check-update");
+    if (checkUpdateBtn) {
+      checkUpdateBtn.addEventListener("click", () => {
+        this.configManager.checkForUpdates({ manual: true });
+      });
+    }
+
     const resetBtn = document.getElementById("btn-reset");
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {

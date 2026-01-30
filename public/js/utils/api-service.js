@@ -115,4 +115,23 @@ class ApiService {
       throw error;
     }
   }
+
+  /**
+   * 获取当前版本信息
+   * @returns {Promise<{version: string, repo: string} | null>}
+   */
+  async getVersion() {
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/version?t=${Date.now()}`,
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.warn("⚠️ 无法获取版本信息:", error.message);
+      return null;
+    }
+  }
 }

@@ -77,6 +77,60 @@ function readDefaultConfig() {
   };
 }
 
+function readAppVersion() {
+  const packageJsonPath = path.join(path.dirname(__dirname), "package.json");
+  if (fs.existsSync(packageJsonPath)) {
+    try {
+      const raw = fs.readFileSync(packageJsonPath, "utf8");
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed.version === "string") {
+        return parsed.version;
+      }
+    } catch (error) {
+      console.warn("⚠️ 读取版本信息失败:", error.message);
+    }
+  }
+  return "0.0.0";
+}
+
+function readRepo() {
+  const packageJsonPath = path.join(path.dirname(__dirname), "package.json");
+  if (fs.existsSync(packageJsonPath)) {
+    try {
+      const raw = fs.readFileSync(packageJsonPath, "utf8");
+      const parsed = JSON.parse(raw);
+      const repoValue =
+        typeof parsed?.repository === "string"
+          ? parsed.repository
+          : parsed?.repository?.url;
+
+      if (typeof repoValue === "string" && repoValue.trim()) {
+        const trimmed = repoValue.trim();
+        if (trimmed.includes("github.com")) {
+          try {
+            const url = new URL(trimmed);
+            let repoPath = url.pathname.replace(/^\/+/, "");
+            repoPath = repoPath.replace(/\.git$/i, "").replace(/\/+$/, "");
+            if (repoPath) {
+              return repoPath;
+            }
+          } catch (error) {
+            console.warn("⚠️ 解析仓库地址失败:", error.message);
+          }
+        }
+
+        const simpleMatch = trimmed.match(/^[^/]+\/[^/]+$/);
+        if (simpleMatch) {
+          return trimmed;
+        }
+      }
+    } catch (error) {
+      console.warn("⚠️ 读取仓库信息失败:", error.message);
+    }
+  }
+  return "KurotaniTakeo/OBS-Win10-Background";
+}
+
 // MIME 类型映射
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -112,6 +166,31 @@ const server = http.createServer((req, res) => {
     `http://${req.headers.host || "localhost"}`,
   );
   const pathname = parsedUrl.pathname;
+
+  // 获取版本信息
+  if (pathname === "/api/version" && req.method === "GET") {
+    try {
+      const version = readAppVersion();
+      const repo = readRepo();
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          version,
+          repo,
+        }),
+      );
+    } catch (error) {
+      console.error("❌ 读取版本信息失败:", error);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "读取版本信息失败: " + error.message,
+        }),
+      );
+    }
+    return;
+  }
 
   // 保存配置
   if (pathname === "/api/config" && req.method === "POST") {
