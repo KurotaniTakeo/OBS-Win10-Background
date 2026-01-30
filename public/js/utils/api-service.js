@@ -136,6 +136,25 @@ class ApiService {
   }
 
   /**
+   * 检查更新（服务器端）
+   * @returns {Promise<Object>} 更新检查结果
+   */
+  async checkUpdate() {
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/update/check?t=${Date.now()}`,
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.warn("⚠️ 检查更新失败:", error.message);
+      throw error;
+    }
+  }
+
+  /**
    * 应用更新（下载并替换 public 目录）
    * @param {Object} payload - 更新参数
    * @param {string} payload.repo - GitHub 仓库

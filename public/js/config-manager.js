@@ -169,7 +169,7 @@ class ConfigManager {
   async checkForUpdates({ manual = false } = {}) {
     try {
       const versionInfo = await this.apiService.getVersion();
-      if (!versionInfo || !versionInfo.version || !versionInfo.repo) {
+      if (!versionInfo || !versionInfo.version) {
         if (manual) {
           this.notificationManager.showUpdateStatusNotification({
             title: "检测失败",
@@ -188,19 +188,14 @@ class ConfigManager {
 
       const themeColor = this.config?.themeColor || "#0078d4";
 
-      const result = await UpdateChecker.checkForUpdates({
-        currentVersion: versionInfo.version,
-        repo: versionInfo.repo,
-        notificationManager: this.notificationManager,
-        themeColor,
-        notifyOnUpdate: false,
-      });
+      // 使用服务器端检查更新
+      const result = await this.apiService.checkUpdate();
 
-      if (result?.status === "update-available") {
+      if (result?.success && result?.hasUpdate) {
         if (!this.updatePromptShown) {
           this.updatePromptShown = true;
           const shouldUpdate = await DialogManager.showUpdateConfirmDialog({
-            currentVersion: versionInfo.version,
+            currentVersion: result.currentVersion,
             latestVersion: result.latestVersion,
             releaseUrl: result.releaseUrl,
             themeColor,
@@ -215,23 +210,31 @@ class ConfigManager {
       }
 
       if (manual) {
-        if (result?.status === "up-to-date") {
+        if (result?.success && !result?.hasUpdate) {
           this.notificationManager.showUpdateStatusNotification({
             title: "已是最新",
-            message: `当前版本 ${versionInfo.version} 已是最新版本`,
+            message: `当前版本 ${result.currentVersion} 已是最新版本`,
             themeColor,
           });
-        } else if (result?.status === "error") {
-          this.notificationManager.showUpdateStatusNotification({
-            title: "检测失败",
-            message: "无法连接更新服务，请稍后再试",
-            themeColor,
-            isError: true,
-          });
-        } else if (result?.status === "update-available") {
+        } else if (!result?.success) {
+          if (!result?.noRelease) {
+            this.notificationManager.showUpdateStatusNotification({
+              title: "检测失败",
+              message: result?.message || "无法连接更新服务，请稍后再试",
+              themeColor,
+              isError: true,
+            });
+          } else {
+            this.notificationManager.showUpdateStatusNotification({
+              title: "暂无更新",
+              message: "仓库暂无可用更新",
+              themeColor,
+            });
+          }
+        } else if (result?.hasUpdate) {
           this.notificationManager.showUpdateStatusNotification({
             title: "发现新版本",
-            message: `当前 ${versionInfo.version} → 最新 ${result.latestVersion}`,
+            message: `当前 ${result.currentVersion} → 最新 ${result.latestVersion}`,
             themeColor,
           });
         }

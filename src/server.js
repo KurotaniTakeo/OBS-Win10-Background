@@ -190,6 +190,19 @@ function normalizeVersion(version) {
     .split("-")[0];
 }
 
+function compareVersions(a, b) {
+  const aParts = normalizeVersion(a).split(".");
+  const bParts = normalizeVersion(b).split(".");
+  const maxLen = Math.max(aParts.length, bParts.length);
+  for (let i = 0; i < maxLen; i++) {
+    const aNum = parseInt(aParts[i] || "0", 10);
+    const bNum = parseInt(bParts[i] || "0", 10);
+    if (aNum > bNum) return 1;
+    if (aNum < bNum) return -1;
+  }
+  return 0;
+}
+
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
     const req = https.get(
@@ -536,6 +549,64 @@ const server = http.createServer((req, res) => {
         }),
       );
     }
+    return;
+  }
+
+  // 检查更新（服务器端代理）
+  if (pathname === "/api/update/check" && req.method === "GET") {
+    (async () => {
+      try {
+        const repo = readRepo();
+        const currentVersion = readAppVersion();
+        const apiUrl = `https://api.github.com/repos/${repo}/releases`;
+
+        console.log(`🔍 检查更新: ${apiUrl}`);
+        const releases = await fetchJson(apiUrl);
+
+        if (!Array.isArray(releases) || releases.length === 0) {
+          throw new Error("HTTP 404: No releases found");
+        }
+
+        // 获取第一个 release（包括 pre-release）
+        const latestRelease = releases[0];
+        const latestTag = latestRelease?.tag_name || latestRelease?.name || "";
+        const latestVersion = normalizeVersion(latestTag);
+        const currentNormalized = normalizeVersion(currentVersion);
+
+        const releaseUrl =
+          latestRelease?.html_url || `https://github.com/${repo}/releases`;
+
+        console.log(
+          `✅ 当前版本: ${currentNormalized}, 最新版本: ${latestVersion} ${latestRelease?.prerelease ? "(pre-release)" : ""}`,
+        );
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            success: true,
+            currentVersion: currentNormalized,
+            latestVersion,
+            releaseUrl,
+            prerelease: latestRelease?.prerelease || false,
+            hasUpdate:
+              latestVersion &&
+              compareVersions(latestVersion, currentNormalized) > 0,
+          }),
+        );
+      } catch (error) {
+        console.warn("⚠️ 更新检查失败:", error.message);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: error.message.includes("404")
+              ? "仓库暂无可用更新"
+              : "更新检查失败: " + error.message,
+            noRelease: error.message.includes("404"),
+          }),
+        );
+      }
+    })();
     return;
   }
 
