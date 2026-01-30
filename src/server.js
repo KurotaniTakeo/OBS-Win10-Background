@@ -83,6 +83,7 @@ const MIME_TYPES = {
   ".css": "text/css; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
   ".json": "application/json",
+  ".md": "text/markdown; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
@@ -211,13 +212,25 @@ const server = http.createServer((req, res) => {
   // 移除查询参数
   filePath = filePath.split("?")[0];
 
-  // 构建完整文件路径
-  const PUBLIC_DIR = path.join(path.dirname(__dirname), "public");
-  const fullPath = path.join(PUBLIC_DIR, filePath);
+  // 确定文件所在的目录
+  const ROOT_DIR = path.dirname(__dirname);
+  const PUBLIC_DIR = path.join(ROOT_DIR, "public");
+  const DOCS_DIR = path.join(ROOT_DIR, "docs");
+  let fullPath;
+  let allowedDir;
 
-  // 安全检查：确保请求的文件在 public 目录内
-  const PUBLIC_DIR_CHECK = path.join(path.dirname(__dirname), "public");
-  if (!fullPath.startsWith(PUBLIC_DIR_CHECK)) {
+  // 处理docs文件请求
+  if (filePath.startsWith("/docs/")) {
+    fullPath = path.join(DOCS_DIR, filePath.substring(6)); // 移除 /docs/ 前缀
+    allowedDir = DOCS_DIR;
+  } else {
+    // 处理public文件请求
+    fullPath = path.join(PUBLIC_DIR, filePath);
+    allowedDir = PUBLIC_DIR;
+  }
+
+  // 安全检查：确保请求的文件在允许的目录内
+  if (!fullPath.startsWith(allowedDir)) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
