@@ -16,7 +16,7 @@ const MAX_PORT_TRIES = 10;
 const BASE_PORT = Number(process.env.PORT) || DEFAULT_PORT;
 let currentPort = BASE_PORT;
 const ROOT_DIR = path.dirname(__dirname);
-const CONFIG_DIR = path.join(ROOT_DIR, "config");
+const CONFIG_DIR = path.join(ROOT_DIR, "configs");
 const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
 const DEFAULT_CONFIG_FILE = path.join(CONFIG_DIR, "config.default.json");
 const LEGACY_ROOT_CONFIG_FILE = path.join(ROOT_DIR, "config.json");
@@ -675,7 +675,7 @@ function startServer(port, attempt = 0) {
     console.log(`🚀 OBS 配置服务器已启动`);
     console.log(`${"=".repeat(50)}`);
     console.log(`📡 服务地址: ${url}`);
-    console.log(`📁 配置文件: ${CONFIG_FILE}`);
+    console.log(`📁 配置目录: ${CONFIG_DIR}`);
     console.log(`\n💡 使用方法：`);
     console.log(`   1. 浏览器访问: ${url}`);
     console.log(`   2. OBS 浏览器源: ${url}`);
