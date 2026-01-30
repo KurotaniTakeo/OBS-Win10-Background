@@ -501,4 +501,64 @@ class DialogManager {
     footerDiv.appendChild(cancelBtn);
     footerDiv.appendChild(confirmBtn);
   }
+
+  /**
+   * 显示更新确认对话框
+   * @param {Object} options - 更新信息
+   * @returns {Promise<boolean>} 是否确认更新
+   */
+  static showUpdateConfirmDialog({
+    currentVersion,
+    latestVersion,
+    releaseUrl,
+    themeColor = "#0078d4",
+  }) {
+    return new Promise((resolve) => {
+      const { modal, bodyDiv, footerDiv } = DialogManager.createModalShell({
+        title: "发现新版本",
+        maxWidth: "520px",
+        maxHeight: "70vh",
+      });
+
+      modal.style.setProperty("--theme-color", themeColor);
+      bodyDiv.innerHTML = `
+        <p style="margin: 0 0 10px 0; font-size: 13px; color: #e0e0e0;">
+          检测到新版本可用，是否现在下载并更新前端资源？
+        </p>
+        <p style="margin: 0 0 10px 0; font-size: 13px; color: #b0b0b0;">
+          当前版本：<strong>${currentVersion || "未知"}</strong><br>
+          最新版本：<strong>${latestVersion || "未知"}</strong>
+        </p>
+        <p style="margin: 0; font-size: 12px; color: #999;">
+          更新将替换 public/ 目录并自动重启服务器。
+        </p>
+        ${
+          releaseUrl
+            ? `<p style="margin: 10px 0 0 0; font-size: 12px;">
+                 <a href="${releaseUrl}" target="_blank">查看更新说明</a>
+               </p>`
+            : ""
+        }
+      `;
+
+      const cancelBtn = document.createElement("button");
+      cancelBtn.className = "app-modal-btn";
+      cancelBtn.textContent = "稍后再说";
+      cancelBtn.addEventListener("click", () => {
+        DialogManager.closeModal(modal);
+        resolve(false);
+      });
+
+      const confirmBtn = document.createElement("button");
+      confirmBtn.className = "app-modal-btn app-modal-btn-primary";
+      confirmBtn.textContent = "立即更新";
+      confirmBtn.addEventListener("click", () => {
+        DialogManager.closeModal(modal);
+        resolve(true);
+      });
+
+      footerDiv.appendChild(cancelBtn);
+      footerDiv.appendChild(confirmBtn);
+    });
+  }
 }

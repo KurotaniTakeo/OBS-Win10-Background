@@ -19,6 +19,8 @@ class ConfigManager {
     this.notificationManager = new NotificationManager();
     this.saveCooldownMs = 1000;
     this.pendingSaveTimer = null;
+    this.updateInProgress = false;
+    this.updatePromptShown = false;
 
     this.defaultConfig = {
       isFirstLaunch: true,
@@ -191,8 +193,26 @@ class ConfigManager {
         repo: versionInfo.repo,
         notificationManager: this.notificationManager,
         themeColor,
-        notifyOnUpdate: true,
+        notifyOnUpdate: false,
       });
+
+      if (result?.status === "update-available") {
+        if (!this.updatePromptShown) {
+          this.updatePromptShown = true;
+          const shouldUpdate = await DialogManager.showUpdateConfirmDialog({
+            currentVersion: versionInfo.version,
+            latestVersion: result.latestVersion,
+            releaseUrl: result.releaseUrl,
+            themeColor,
+          });
+          if (shouldUpdate) {
+            await this.applyUpdate({
+              repo: versionInfo.repo,
+              latestVersion: result.latestVersion,
+            });
+          }
+        }
+      }
 
       if (manual) {
         if (result?.status === "up-to-date") {
@@ -208,6 +228,12 @@ class ConfigManager {
             themeColor,
             isError: true,
           });
+        } else if (result?.status === "update-available") {
+          this.notificationManager.showUpdateStatusNotification({
+            title: "发现新版本",
+            message: `当前 ${versionInfo.version} → 最新 ${result.latestVersion}`,
+            themeColor,
+          });
         }
       }
     } catch (error) {
@@ -220,6 +246,46 @@ class ConfigManager {
           isError: true,
         });
       }
+    }
+  }
+
+  /**
+   * 应用更新（下载并替换 public 目录）
+   */
+  async applyUpdate({ repo, latestVersion }) {
+    if (this.updateInProgress) return;
+    this.updateInProgress = true;
+
+    const themeColor = this.config?.themeColor || "#0078d4";
+
+    try {
+      this.notificationManager.showUpdateStatusNotification({
+        title: "正在更新",
+        message: "正在下载并应用更新，请稍候...",
+        themeColor,
+      });
+
+      await this.apiService.applyUpdate({ repo });
+
+      this.notificationManager.showUpdateStatusNotification({
+        title: "更新完成",
+        message: `已更新到 ${latestVersion || "最新"}，服务器即将重启`,
+        themeColor,
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 4000);
+    } catch (error) {
+      console.error("❌ 更新应用失败:", error);
+      this.notificationManager.showUpdateStatusNotification({
+        title: "更新失败",
+        message: "更新应用失败，请稍后再试",
+        themeColor,
+        isError: true,
+      });
+    } finally {
+      this.updateInProgress = false;
     }
   }
 

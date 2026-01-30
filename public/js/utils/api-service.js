@@ -134,4 +134,31 @@ class ApiService {
       return null;
     }
   }
+
+  /**
+   * 应用更新（下载并替换 public 目录）
+   * @param {Object} payload - 更新参数
+   * @param {string} payload.repo - GitHub 仓库
+   * @returns {Promise<Object>} 服务器响应
+   */
+  async applyUpdate(payload = {}) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/update/apply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ 更新应用失败:", error);
+      throw error;
+    }
+  }
 }

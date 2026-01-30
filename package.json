@@ -16,6 +16,9 @@
     "type": "git",
     "url": "https://github.com/KurotaniTakeo/OBS-Win10-Background.git"
   },
+  "dependencies": {
+    "adm-zip": "^0.5.16"
+  },
   "author": "",
   "license": "MIT"
 }
