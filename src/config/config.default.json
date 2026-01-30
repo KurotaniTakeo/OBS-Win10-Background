@@ -1,0 +1,16 @@
+{
+  "isFirstLaunch": true,
+  "fontFamily": "Segoe UI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif",
+  "themeColor": "#0078d4",
+  "sidebarBgColor": "rgb(20, 20, 30)",
+  "showTitleBar": true,
+  "enableTitleBarFont": true,
+  "logoIcon": "",
+  "navIconsBlack": "",
+  "bottomIcon": "",
+  "windowTitle": "Test Live Background",
+  "windowTitleFont": "Segoe UI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif",
+  "windowTitleFontSize": 18,
+  "titleBarButtons": "&#xE921;,&#xE923;,&#xE8BB;",
+  "_comment": "配置文件示例。复制此文件为 config.json 并修改配置项。修改配置后在设置面板中保存会自动下载新的 config.json，替换项目文件并刷新页面即可生效。"
+}

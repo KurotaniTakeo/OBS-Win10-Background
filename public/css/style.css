@@ -1,0 +1,809 @@
+/* --- 全局样式重置 --- */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family:
+    "Segoe UI",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    sans-serif;
+  background-color: transparent;
+  font-size: 18px;
+}
+
+/* Remove all shadow effects globally */
+* {
+  box-shadow: none !important;
+}
+
+.title-bar {
+  position: fixed;
+  top: 0;
+  left: 80px;
+  right: 0;
+  height: 60px;
+  background-color: #2d2d30; /* Same color as Sidebar's dark section */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  font-family: "Segoe MDL2 Assets";
+  border-bottom: 1px solid rgb(50, 50, 50);
+  z-index: 99;
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.title-bar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.title-bar .title {
+  color: white;
+  font-family:
+    "Segoe UI",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  flex: 1;
+  margin-right: 10px;
+  margin-left: 20px;
+}
+
+.title-bar .control-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.title-bar .control-button {
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  line-height: 1;
+}
+
+.title-bar .control-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- 主要容器 --- */
+/* --- 主要容器 --- */
+.background-container {
+  width: calc(100% - 80px);
+  height: calc(100% - 60px);
+  background-color: transparent;
+  position: fixed;
+  overflow: hidden;
+  margin-top: 60px;
+  margin-left: 80px;
+  top: 0;
+  left: 0;
+  transition:
+    margin-top 0.25s ease,
+    height 0.25s ease;
+}
+
+body.titlebar-hidden .background-container {
+  height: 100%;
+  margin-top: 0;
+}
+
+/* --- 左侧导航栏（NavigationView风格，改为正方形按钮） --- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 100vh;
+  background-color: rgb(20, 20, 30);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 2px solid rgb(0, 120, 212);
+  z-index: 100;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.logo-placeholder {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid rgb(0, 120, 212);
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.info-box {
+  width: 100%;
+  height: 80px;
+  padding: 0;
+  text-align: center;
+  color: #ffffff;
+  border-bottom: 1px solid rgb(50, 50, 50);
+  transition: background-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.info-box:hover {
+  background-color: rgb(50, 50, 60);
+}
+
+.info-title {
+  display: none;
+}
+
+.info-content {
+  display: block;
+  font-size: 36px;
+  font-weight: 600;
+  margin-top: 0;
+  color: #ffffff;
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+.info-box-2 {
+  width: 100%;
+  flex-grow: 1;
+  background-color: transparent;
+  margin-top: 0;
+  border-bottom: 1px solid rgb(40, 40, 40);
+}
+
+/* 动态导航icon容器 */
+.nav-icons-container {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+  gap: 0;
+}
+
+.nav-icon-btn {
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  color: #ffffff;
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-size: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 0;
+  border-bottom: 1px solid rgb(40, 40, 40);
+}
+
+.nav-icon-btn:hover {
+  background-color: rgb(0, 60, 80);
+}
+
+/* 底部icon容器 */
+.bottom-icon-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border-top: 1px solid rgb(40, 40, 40);
+  margin-top: auto;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.3s ease;
+}
+
+.bottom-icon-container:hover {
+  background-color: rgb(0, 60, 80);
+}
+
+.bottom-icon-container:active {
+  background-color: rgb(0, 120, 180);
+}
+
+.bottom-icon-container .info-content {
+  font-size: 36px;
+  color: #ffffff;
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  transition: color 0.3s ease;
+}
+
+/* --- 底部装饰条 --- */
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 80px;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #0078d4 0%, #00d4ff 50%, transparent 100%);
+  z-index: 98;
+}
+
+/* --- 配置面板（隐藏在OBS中） --- */
+.config-panel {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 380px;
+  height: calc(100vh - 60px);
+  background: #191919;
+  border-left: 1px solid var(--theme-color, rgb(0, 120, 212));
+  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 10000;
+  transform: translateX(100%);
+  transition:
+    transform 0.3s ease,
+    top 0.25s ease,
+    height 0.25s ease;
+}
+
+body.titlebar-hidden .config-panel {
+  top: 0;
+  height: 100vh;
+}
+
+.config-panel-resizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  background: transparent;
+  z-index: 10001;
+}
+
+.config-panel-resizer:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.config-panel.show {
+  transform: translateX(0);
+}
+
+.config-header {
+  position: sticky;
+  top: 0;
+  height: 60px;
+  padding: 0 16px;
+  background: linear-gradient(
+    135deg,
+    var(--theme-color, #0078d4) 0%,
+    var(--theme-color-dark, #106ebe) 100%
+  );
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--theme-color, rgb(0, 120, 212));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: color 0.3s ease;
+}
+
+/* 关闭按钮icon */
+.config-header-close {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #999999;
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+}
+
+.config-header-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* 配置分组样式 */
+.config-section-group {
+  border-bottom: 2px solid rgb(50, 50, 50);
+}
+
+.config-group-title {
+  padding: 16px 20px 12px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid rgb(40, 40, 40);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.group-title-icon {
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.group-title-icon:empty {
+  display: none;
+  margin: 0;
+}
+
+.config-section {
+  padding: 20px;
+  border-bottom: 1px solid rgb(40, 40, 40);
+}
+
+.config-section:last-child {
+  border-bottom: none;
+}
+
+/* 配置提示文本 */
+.config-hint {
+  font-size: 13px;
+  color: #888888;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.config-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.config-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 3px solid #666666;
+  border-radius: 0;
+  font-size: 15px;
+  box-sizing: border-box;
+  font-family: inherit;
+  background-color: rgb(30, 30, 30);
+  color: #ffffff;
+}
+
+.config-input:focus {
+  outline: none;
+  border-color: #666666;
+  background-color: rgb(20, 20, 20);
+  box-shadow: none;
+}
+
+/* Icon输入框特殊样式 */
+#logo-icon-input,
+#nav-icons-input,
+#bottom-icon-input,
+#titlebar-buttons-input {
+  font-family: "Segoe MDL2 Assets", monospace, "Segoe UI";
+  font-size: 20px;
+  text-align: left;
+}
+
+/* 颜色选择器容器 */
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.config-color-input {
+  width: 50px;
+  height: 44px;
+  padding: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.config-color-input::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.config-color-input::-webkit-color-swatch {
+  border: 3px solid #666666;
+  border-radius: 0;
+}
+
+.color-picker-value {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  background-color: rgb(30, 30, 30);
+  border: 3px solid #666666;
+  color: #ffffff;
+  font-family: monospace;
+  font-size: 14px;
+  border-radius: 0;
+  min-height: 20px;
+  cursor: default;
+}
+
+.color-picker-value:focus {
+  outline: none;
+  border-color: #666666;
+  background-color: rgb(20, 20, 20);
+  box-shadow: none;
+}
+
+.color-format-toggle {
+  width: 56px;
+  height: 44px;
+  padding: 0;
+  background-color: #2d2d2d;
+  border: 3px solid #666666;
+  border-radius: 0;
+  color: #e0e0e0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.color-format-toggle:hover {
+  background-color: #3a3a3a;
+  border-color: #666666;
+  color: #ffffff;
+}
+
+.color-format-toggle:active {
+  background-color: var(--theme-color, #0078d4);
+  border-color: #666666;
+  color: #ffffff;
+}
+
+.config-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+}
+
+.toggle-switch {
+  width: 50px;
+  height: 26px;
+  background-color: #5a5a5a;
+  border: 3px solid #666666;
+  border-radius: 0;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.toggle-switch:focus {
+  outline: none;
+}
+
+.toggle-switch.active {
+  background-color: var(--theme-color, #0078d4);
+}
+
+.toggle-switch::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  top: 2px;
+  left: 2px;
+  transition: left 0.2s ease;
+  border-radius: 0;
+}
+
+.toggle-switch.active::after {
+  background-color: #ffffff;
+  left: 28px;
+}
+
+.config-close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ffffff;
+  z-index: 10001;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.config-close:hover {
+  color: var(--theme-color, #00d4ff);
+}
+
+/* --- 配置面板保存按钮样式 --- */
+.save-config-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--theme-color, #0078d4);
+  color: white;
+  border: 3px solid #666666;
+  border-radius: 0;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.save-config-btn:hover {
+  background: var(--theme-color-dark, #106ebe);
+  border-color: #666666;
+}
+
+.save-config-btn:active {
+  opacity: 0.8;
+}
+
+.save-config-btn:focus {
+  outline: none;
+}
+/* �۵����ݶ��� */
+.collapsible-content {
+  max-height: 1000px;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+  opacity: 1;
+}
+
+.collapsible-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ========== 选项卡样式 ========== */
+.config-tabs {
+  display: flex;
+  gap: 5px;
+  flex: 1;
+}
+
+.config-tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-tab-icon {
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.config-tab-icon:empty {
+  display: none;
+  margin: 0;
+}
+
+.config-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.config-tab.active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+.config-tab-content {
+  display: none;
+  padding: 20px;
+  padding-bottom: 100px;
+  overflow-y: auto;
+  height: calc(100% - 60px);
+}
+
+.config-tab-content.active {
+  display: block;
+}
+
+/* 保存按钮区域 - 增加下方留白 */
+.save-config-section {
+  margin-bottom: 40px !important;
+}
+
+/* ========== 关于页面样式 ========== */
+.about-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #e0e0e0;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgb(50, 50, 50);
+}
+
+.about-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+  color: var(--theme-color, #0078d4);
+  font-weight: 600;
+}
+
+.about-version {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+}
+
+.about-section {
+  margin-bottom: 25px;
+}
+
+.about-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.about-section p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #b0b0b0;
+  line-height: 1.6;
+}
+
+.about-link {
+  color: var(--theme-color, #0078d4);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about-link:hover {
+  color: var(--theme-color-dark, #106ebe);
+  text-decoration: underline;
+}
+
+.about-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.about-btn {
+  padding: 12px 16px;
+  background: #2d2d2d;
+  border: 3px solid #666666;
+  border-radius: 0;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-icon {
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.btn-icon:empty {
+  display: none;
+  margin: 0;
+}
+
+.about-btn:hover {
+  background: #3a3a3a;
+  border-color: #666666;
+  color: #ffffff;
+}
+
+.about-btn:active {
+  background: var(--theme-color, #0078d4);
+  border-color: #666666;
+}
+
+.about-btn-danger {
+  border: 3px solid #666666;
+}
+
+.about-btn-danger:hover {
+  background: #3a3a3a;
+  border-color: #666666;
+  color: #ff6b7a;
+}
+
+.about-btn-danger:active {
+  background: #e81123;
+  border-color: #666666;
+  color: #ffffff;
+}
+
+.about-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgb(50, 50, 50);
+  text-align: center;
+}
+
+.about-footer p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}

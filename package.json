@@ -1,0 +1,17 @@
+{
+  "name": "obs-config-server",
+  "version": "1.0.0",
+  "description": "配置文件服务器，用于 OBS 背景配置管理",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "keywords": [
+    "obs",
+    "config",
+    "server"
+  ],
+  "author": "",
+  "license": "MIT"
+}

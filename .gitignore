@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# 编辑器和IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+*.cache
+
+# 构建输出
+dist/
+build/
+*.min.js
+*.min.css
+
+# 配置文件（如果包含敏感信息）
+config.local.js
+.env
+.env.local
+
+# OBS相关
+*.obs
+obs-studio/
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 压缩文件
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# 其他
+docs/

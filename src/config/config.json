@@ -1,0 +1,17 @@
+{
+    "isFirstLaunch": false,
+    "fontFamily": "微软雅黑, Segoe UI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif",
+    "themeColor": "#00738a",
+    "sidebarBgColor": "#2d2d30",
+    "showTitleBar": true,
+    "enableTitleBarFont": true,
+    "logoIcon": "",
+    "navIconsBlack": "1,2,3",
+    "bottomIcon": "",
+    "windowTitle": "Create: New Horizons",
+    "windowTitleFont": "Segoe UI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif",
+    "windowTitleFontSize": 20,
+    "titleBarButtons": "",
+    "fontSize": 10,
+    "_comment": "配置文件示例。复制此文件为 config.json 并修改配置项。修改配置后在设置面板中保存会自动下载新的 config.json，替换项目文件并刷新页面即可生效。"
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBS Windows 10 Background</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Segoe MDL2 Assets 字体支持 */
+        @font-face {
+            font-family: 'Segoe MDL2 Assets';
+            src: local('Segoe MDL2 Assets');
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="logo-placeholder" id="logo-icon"></div>
+        <div id="nav-icons-container" class="nav-icons-container"></div>
+        <div class="info-box-2"></div>
+        <button id="bottom-icon-container" class="bottom-icon-container" title="打开设置">
+            <span class="info-content" id="bottom-icon"></span>
+        </button>
+    </div>
+
+    <!-- 标题栏 -->
+    <div class="title-bar">
+        <div class="title" id="window-title">Your Window Title</div>
+        <div class="control-buttons">
+            <button class="control-button" id="btn-minimize" title="Minimize">&#xE921;</button>
+            <button class="control-button" id="btn-maximize" title="Maximize/Restore">&#xE923;</button>
+            <button class="control-button" id="btn-close" title="Close">&#xE8BB;</button>
+        </div>
+    </div>
+
+    <div class="background-container">
+        <div class="main-content">
+            <!-- 直播画面透明区域 -->
+        </div>
+
+        <div class="footer-bar"></div>
+    </div>
+
+    <!-- 隐藏的配置面板 -->
+    <div class="config-panel" id="config-panel">
+        <div class="config-panel-resizer" id="config-panel-resizer"></div>
+        <div class="config-header">
+            <div class="config-tabs">
+                <button class="config-tab active" data-tab="settings" id="tab-settings"><span class="config-tab-icon">&#xE713;</span><span>设置</span></button>
+                <button class="config-tab" data-tab="about" id="tab-about"><span class="config-tab-icon">&#xE946;</span><span>关于</span></button>
+            </div>
+            <button class="config-header-close" id="config-header-close" title="关闭">✕</button>
+        </div>
+        
+        <!-- ========== 设置标签页 ========== -->
+        <div class="config-tab-content active" id="tab-content-settings">
+        
+        <!-- ========== 复制OBS URL ========== -->
+        <div class="config-section-group">
+            <div class="config-section">
+                <button class="about-btn" id="btn-copy-url" style="width: 100%;"><span class="btn-icon">&#xE16D;</span><span>复制 OBS 浏览器源 URL</span></button>
+                <div class="config-hint">1. 点击复制URL地址<br>2. 在OBS中添加“浏览器”源并粘贴此URL<br>3. 浏览器源的高度和宽度设置为您的OBS画布分辨率</div>
+            </div>
+        </div>
+
+        <div class="config-section-group">
+            <div class="config-group-title"><span class="group-title-icon">&#xE2B1;</span><span>全局外观设置</span></div>
+            
+            <div class="config-section">
+                <label class="config-label">主题颜色</label>
+                <div class="color-picker-wrapper">
+                    <input type="color" class="config-input config-color-input" id="theme-color" value="#0078d4">
+                    <input type="text" class="color-picker-value" id="theme-color-value" value="#0078d4" placeholder="输入颜色代码">
+                    <button class="color-format-toggle" id="theme-color-toggle" data-format="hex" title="切换颜色格式">HEX</button>
+                </div>
+                <div class="config-hint">主题色会应用到设置面板标题等元素上。<br>不建议使用过浅或者比背景色更深的颜色。</div>
+            </div>
+
+            <div class="config-section">
+                <label class="config-label">字体名称</label>
+                <input type="text" class="config-input" id="font-family" placeholder="例如: Segoe UI">
+                <div class="config-hint">设置页等处的后备字体（Fallback Font）。</div>
+            </div>
+        </div>
+
+        <!-- ========== 侧栏设置 ========== -->
+        <div class="config-section-group">
+            <div class="config-group-title"><span class="group-title-icon">&#xEA49;</span><span>侧栏设置</span></div>
+            
+            <div class="config-section">
+                <label class="config-label">侧栏背景色</label>
+                <div class="color-picker-wrapper">
+                <input type="color" class="config-input config-color-input" id="sidebar-bg-color" value="#140014">
+                    <input type="text" class="color-picker-value" id="sidebar-bg-color-value" value="#140014" placeholder="输入颜色代码">
+                    <button class="color-format-toggle" id="sidebar-bg-color-toggle" data-format="hex" title="切换颜色格式">HEX</button>
+                </div>
+                <div class="config-hint">侧栏的背景颜色。</div>
+            </div>
+            
+            <div class="config-section">
+                <label class="config-label">顶部Logo Icon</label>
+                <input type="text" class="config-input" id="logo-icon-input" placeholder="例如: &#xE700" maxlength="1">
+                <div class="config-hint">使用方法参见 关于 >> 使用说明</div>
+            </div>
+            
+            <div class="config-section">
+                <label class="config-label">导航栏Icon (用逗号分隔)</label>
+                <input type="text" class="config-input" id="nav-icons-input" placeholder="例如: &#xE7FC,&#xE8BD,&#xE90B">
+                <div class="config-hint">每个icon占一个位置，逗号表示空位<br>不建议超过7个icon</div>
+            </div>
+            
+            <div class="config-section">
+                <label class="config-label">底部Icon</label>
+                <input type="text" class="config-input" id="bottom-icon-input" placeholder="例如: &#xE713" maxlength="1">
+            </div>
+        </div>
+
+        <!-- ========== 标题栏设置 ========== -->
+        <div class="config-section-group">
+            <div class="config-group-title"><span class="group-title-icon">&#xE737;</span><span>标题栏设置</span></div>
+            
+            <div class="config-section">
+                <label class="config-label">
+                    <div class="config-toggle">
+                        <span>显示标题栏</span>
+                        <button class="toggle-switch active" id="toggle-titlebar"></button>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="collapsible-content" id="titlebar-details">
+                <div class="config-section">
+                    <label class="config-label">窗口标题</label>
+                    <input type="text" class="config-input" id="window-title-input" placeholder="例如: OBS Windows 10 Background">
+                </div>
+
+                <div class="config-section">
+                    <label class="config-label">
+                        <div class="config-toggle">
+                            <span>启用单独字体设置</span>
+                            <button class="toggle-switch" id="toggle-titlebar-font"></button>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="collapsible-content" id="titlebar-font-details">
+                    <div class="config-section">
+                        <label class="config-label">标题栏字体</label>
+                        <input type="text" class="config-input" id="window-title-font-input" placeholder="例如: Segoe UI, Arial, sans-serif">
+                    </div>
+                    
+                    <div class="config-section">
+                        <label class="config-label">标题栏字体大小</label>
+                        <input type="number" class="config-input" id="window-title-font-size-input" placeholder="18" value="18" min="8" max="32">
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <label class="config-label">标题栏按钮（用逗号分隔）</label>
+                    <input type="text" class="config-input" id="titlebar-buttons-input" placeholder="例如: &#xE921;,&#xE923;,&#xE8BB;">
+                    <div class="config-hint">使用Segoe MDL2 Assets字体</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 保存按钮 ========== -->
+        <div class="config-section save-config-section" style="border-bottom: none;">
+            <button class="save-config-btn" id="save-config-btn">保存配置</button>
+        </div>
+        </div>
+
+        <!-- ========== 关于标签页 ========== -->
+        <div class="config-tab-content" id="tab-content-about">
+            <div class="about-container">
+                <div class="about-header">
+                    <h2>OBS Windows 10 Background</h2>
+                    <p class="about-version">版本: <span id="app-version">1.0.0</span></p>
+                </div>
+
+                <div class="about-section">
+                    <h3>项目信息</h3>
+                    <p>一个Windows10时期WinUI风格的OBS直播背景，支持自定义外观、主题色、图标等多项功能。</p>
+                    <p>
+                        <strong>GitHub:</strong> 
+                        <a href="https://github.com/KurotaniTakeo/OBS-Win10-Background" target="_blank" class="about-link">项目地址</a>
+                    </p>
+                </div>
+
+                <div class="about-section">
+                    <h3>快速操作</h3>
+                    <div class="about-buttons">
+                        <button class="about-btn" id="btn-help">📖 使用说明</button>
+                        <button class="about-btn" id="btn-changelog">📝 更新说明</button>
+                        <button class="about-btn about-btn-danger" id="btn-reset">🔄 恢复默认配置</button>
+                    </div>
+                </div>
+
+                <div class="about-footer">
+                    <p>© 2026 OBS Windows 10 Background. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 按正确的依赖顺序加载所有脚本模块 -->
+    <!-- 1. 工具类（无依赖） -->
+    <script src="js/utils/color-utils.js"></script>
+    <script src="js/utils/notification-manager.js"></script>
+    <script src="js/utils/dialog-manager.js"></script>
+    <script src="js/utils/api-service.js"></script>
+    
+    <!-- 2. 配置应用和事件绑定 -->
+    <script src="js/utils/config-applier.js"></script>
+    <script src="js/utils/event-binder.js"></script>
+    
+    <!-- 3. 主配置管理器 -->
+    <script src="js/config-manager.js"></script>
+    
+    <script>
+        // 配置管理器会自动从 config.json 加载配置
+        // 无需额外初始化代码
+        console.log('🚀 OBS Windows 10 Background 已启动，配置从 config.json 读取');
+    </script>
+</body>
+</html>
