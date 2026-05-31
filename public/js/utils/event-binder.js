@@ -456,6 +456,13 @@ class EventBinder {
       });
     }
 
+    const downloadFontBtn = document.getElementById("btn-download-font");
+    if (downloadFontBtn) {
+      downloadFontBtn.addEventListener("click", () => {
+        window.open("https://aka.ms/SegoeFonts", "_blank");
+      });
+    }
+
     const resetBtn = document.getElementById("btn-reset");
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
