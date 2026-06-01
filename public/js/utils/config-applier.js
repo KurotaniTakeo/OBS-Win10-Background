@@ -269,7 +269,7 @@ class ConfigApplier {
       button.className = "nav-icon-btn";
       button.id = `nav-icon-dynamic-${index}`;
       button.textContent = icon;
-      button.style.fontFamily = "'Segoe MDL2 Assets', 'Segoe UI'";
+      button.style.fontFamily = "'Segoe MDL2 Assets', 'Segoe UI', sans-serif";
       button.style.fontSize = "36px";
       button.style.color = "#ffffff";
       button.style.backgroundColor = "transparent";

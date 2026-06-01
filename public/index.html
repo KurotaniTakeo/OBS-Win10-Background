@@ -19,7 +19,7 @@
         <div class="logo-placeholder" id="logo-icon"></div>
         <div id="nav-icons-container" class="nav-icons-container"></div>
         <div class="info-box-2"></div>
-        <button id="bottom-icon-container" class="bottom-icon-container" title="打开设置">
+        <button id="bottom-icon-container" class="bottom-icon-container" title="打开配置页面">
             <span class="info-content" id="bottom-icon"></span>
         </button>
     </div>
@@ -60,7 +60,7 @@
         <div class="config-section-group">
             <div class="config-section">
                 <button class="about-btn" id="btn-copy-url" style="width: 100%;"><span class="btn-icon">&#xE16D;</span><span>复制 OBS 浏览器源 URL</span></button>
-                <div class="config-hint">1. 点击复制URL地址<br>2. 在OBS中添加“浏览器”源并粘贴此URL<br>3. 浏览器源的高度和宽度设置为您的OBS画布分辨率</div>
+                <div class="config-hint">1. 点击复制URL地址<br>2. 在OBS中添加"浏览器"源并粘贴此URL<br>3. 浏览器源的高度和宽度设置为您的OBS画布分辨率</div>
             </div>
         </div>
         <!-- ========== 配置管理 ========== -->
@@ -231,22 +231,7 @@
     <!-- 按正确的依赖顺序加载所有脚本模块 -->
     <!-- 1. 工具类（无依赖） -->
     <script src="js/utils/color-utils.js"></script>
-    <script src="js/utils/notification-manager.js"></script>
-    <script src="js/utils/dialog-manager.js"></script>
-    <script src="js/utils/api-service.js"></script>
-    <script src="js/utils/update-checker.js"></script>
-    
-    <!-- 2. 配置应用和事件绑定 -->
     <script src="js/utils/config-applier.js"></script>
-    <script src="js/utils/event-binder.js"></script>
-    
-    <!-- 3. 主配置管理器 -->
-    <script src="js/config-manager.js"></script>
-    
-    <script>
-        // 配置管理器会自动从 config.json 加载配置
-        // 无需额外初始化代码
-        console.log('🚀 OBS Windows 10 Background 已启动，配置从 config.json 读取');
-    </script>
+    <script src="js/scene-init.js"></script>
 </body>
 </html>

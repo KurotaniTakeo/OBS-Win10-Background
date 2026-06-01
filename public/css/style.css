@@ -32,7 +32,7 @@ html {
   justify-content: space-between;
   align-items: center;
   padding: 0 15px;
-  font-family: "Segoe MDL2 Assets";
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   border-bottom: 1px solid rgb(50, 50, 50);
   z-index: 99;
   transform: translateY(0);
@@ -75,7 +75,7 @@ html {
   border: none;
   color: white;
   font-size: 24px;
-  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   font-weight: 400;
   cursor: pointer;
   display: flex;
@@ -89,7 +89,6 @@ html {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* --- 主要容器 --- */
 /* --- 主要容器 --- */
 .background-container {
   width: calc(100% - 80px);
@@ -140,7 +139,7 @@ body.titlebar-hidden .background-container {
   justify-content: center;
   align-items: center;
   border-bottom: 2px solid rgb(0, 120, 212);
-  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   transition:
     border-color 0.3s ease,
     color 0.3s ease;
@@ -175,7 +174,7 @@ body.titlebar-hidden .background-container {
   font-weight: 600;
   margin-top: 0;
   color: #ffffff;
-  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   line-height: 1;
   transition: color 0.3s ease;
 }
@@ -203,7 +202,7 @@ body.titlebar-hidden .background-container {
   border: none;
   background-color: transparent;
   color: #ffffff;
-  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   font-size: 36px;
   cursor: pointer;
   display: flex;
@@ -247,7 +246,7 @@ body.titlebar-hidden .background-container {
 .bottom-icon-container .info-content {
   font-size: 36px;
   color: #ffffff;
-  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   transition: color 0.3s ease;
 }
 
@@ -599,7 +598,7 @@ body.titlebar-hidden .config-panel {
 .save-config-btn:focus {
   outline: none;
 }
-/* �۵����ݶ��� */
+/* 折叠内容 */
 .collapsible-content {
   max-height: 1000px;
   overflow: hidden;

@@ -6,9 +6,6 @@ class EventBinder {
     this.configManager = configManager;
   }
 
-  /**
-   * 绑定所有配置面板事件
-   */
   bindConfigEvents() {
     this.bindFontSettings();
     this.bindThemeColorSettings();
@@ -19,15 +16,11 @@ class EventBinder {
     this.bindToggle("toggle-titlebar", "showTitleBar");
     this.bindToggle("toggle-titlebar-font", "enableTitleBarFont");
     this.bindPanelControls();
-    this.bindPanelResize();
-    this.bindTabSwitching();
+    this.bindNavSwitching();
     this.bindAboutButtons();
     this.bindCopyUrlButton();
   }
 
-  /**
-   * 绑定字体设置
-   */
   bindFontSettings() {
     const fontFamilyInput = document.getElementById("font-family");
     if (fontFamilyInput) {
@@ -41,9 +34,6 @@ class EventBinder {
     }
   }
 
-  /**
-   * 绑定主题颜色设置
-   */
   bindThemeColorSettings() {
     const themeColorInput = document.getElementById("theme-color");
     if (themeColorInput) {
@@ -114,9 +104,6 @@ class EventBinder {
     }
   }
 
-  /**
-   * 绑定侧栏背景色设置
-   */
   bindSidebarBgColorSettings() {
     const sidebarBgColorInput = document.getElementById("sidebar-bg-color");
     if (sidebarBgColorInput) {
@@ -194,9 +181,6 @@ class EventBinder {
     }
   }
 
-  /**
-   * 绑定icon输入
-   */
   bindIconSettings() {
     this.bindIconInput("logo-icon-input", "logoIcon", "#logo-icon");
     this.bindIconInput(
@@ -208,9 +192,6 @@ class EventBinder {
     this.bindIconInput("bottom-icon-input", "bottomIcon", "#bottom-icon");
   }
 
-  /**
-   * 绑定单个icon输入
-   */
   bindIconInput(inputId, configKey, elementSelector, callbackMethod) {
     const input = document.getElementById(inputId);
     if (input) {
@@ -223,7 +204,6 @@ class EventBinder {
           e.target.value.trim() || defaultValues[configKey] || e.target.value;
 
         if (callbackMethod && callbackMethod === "renderNavIcons") {
-          // renderNavIcons 需要传递侧栏背景色参数
           ConfigApplier.renderNavIcons(
             e.target.value,
             this.configManager.config.sidebarBgColor,
@@ -244,7 +224,6 @@ class EventBinder {
 
       if (this.configManager.config[configKey]) {
         if (callbackMethod && callbackMethod === "renderNavIcons") {
-          // renderNavIcons 需要传递侧栏背景色参数
           ConfigApplier.renderNavIcons(
             this.configManager.config[configKey],
             this.configManager.config.sidebarBgColor,
@@ -264,9 +243,6 @@ class EventBinder {
     }
   }
 
-  /**
-   * 绑定窗口标题设置
-   */
   bindWindowTitleSettings() {
     const windowTitleInput = document.getElementById("window-title-input");
     if (windowTitleInput) {
@@ -274,10 +250,6 @@ class EventBinder {
         this.configManager.config.windowTitle || "OBS Windows 10 Background";
       windowTitleInput.addEventListener("change", (e) => {
         this.configManager.config.windowTitle = e.target.value;
-        const windowTitle = document.getElementById("window-title");
-        if (windowTitle) {
-          windowTitle.textContent = e.target.value;
-        }
         this.configManager.scheduleSaveConfig();
       });
     }
@@ -291,10 +263,6 @@ class EventBinder {
         "Segoe UI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif";
       windowTitleFontInput.addEventListener("change", (e) => {
         this.configManager.config.windowTitleFont = e.target.value;
-        const windowTitle = document.getElementById("window-title");
-        if (windowTitle && this.configManager.config.enableTitleBarFont) {
-          windowTitle.style.fontFamily = e.target.value;
-        }
         this.configManager.scheduleSaveConfig();
       });
     }
@@ -309,18 +277,11 @@ class EventBinder {
         this.configManager.config.windowTitleFontSize = parseInt(
           e.target.value,
         );
-        const windowTitle = document.getElementById("window-title");
-        if (windowTitle && this.configManager.config.enableTitleBarFont) {
-          windowTitle.style.fontSize = e.target.value + "px";
-        }
         this.configManager.scheduleSaveConfig();
       });
     }
   }
 
-  /**
-   * 绑定标题栏按钮设置
-   */
   bindTitleBarButtonSettings() {
     const titleBarButtonsInput = document.getElementById(
       "titlebar-buttons-input",
@@ -331,106 +292,49 @@ class EventBinder {
         "&#xE921;,&#xE923;,&#xE8BB;";
       titleBarButtonsInput.addEventListener("change", (e) => {
         this.configManager.config.titleBarButtons = e.target.value;
-        ConfigApplier.renderTitleBarButtons(e.target.value);
         this.configManager.scheduleSaveConfig();
       });
     }
   }
 
-  /**
-   * 绑定配置面板控制按钮
-   */
   bindPanelControls() {
-    const headerCloseBtn = document.getElementById("config-header-close");
-    if (headerCloseBtn) {
-      headerCloseBtn.addEventListener("click", () => {
-        const panel = document.getElementById("config-panel");
-        if (panel) {
-          panel.classList.remove("show");
-        }
-      });
-    }
-
-    const saveBtn = document.getElementById("save-config-btn");
-    if (saveBtn) {
-      saveBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        await this.configManager.saveConfig();
-      });
-    }
-  }
-
-  /**
-   * 绑定配置面板左边框拖拽调整宽度
-   */
-  bindPanelResize() {
-    const panel = document.getElementById("config-panel");
-    const resizer = document.getElementById("config-panel-resizer");
-    if (!panel || !resizer) return;
-
-    let isDragging = false;
-    let startX = 0;
-    let startWidth = 0;
-
-    const onMouseMove = (e) => {
-      if (!isDragging) return;
-      const delta = startX - e.clientX;
-      const minWidth = 400;
-      const maxWidth = 760;
-      const nextWidth = Math.min(
-        maxWidth,
-        Math.max(minWidth, startWidth + delta),
-      );
-      panel.style.width = `${nextWidth}px`;
-    };
-
-    const onMouseUp = () => {
-      if (!isDragging) return;
-      isDragging = false;
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-
-    resizer.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      isDragging = true;
-      startX = e.clientX;
-      startWidth = panel.getBoundingClientRect().width;
-      document.body.style.cursor = "ew-resize";
-      document.body.style.userSelect = "none";
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
+    const saveBtnIds = [
+      "save-config-btn",
+      "save-config-btn-appearance",
+      "save-config-btn-sidebar",
+      "btn-save-topbar",
+    ];
+    saveBtnIds.forEach((id) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          await this.configManager.saveConfig();
+        });
+      }
     });
   }
 
-  /**
-   * 绑定选项卡切换功能
-   */
-  bindTabSwitching() {
-    const tabs = document.querySelectorAll(".config-tab");
-    const tabContents = document.querySelectorAll(".config-tab-content");
+  bindNavSwitching() {
+    const navItems = document.querySelectorAll(".config-nav-item");
+    const pages = document.querySelectorAll(".config-page");
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        const tabName = tab.dataset.tab;
+    navItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        const pageId = item.dataset.page;
 
-        tabs.forEach((t) => t.classList.remove("active"));
-        tabContents.forEach((c) => c.classList.remove("active"));
+        navItems.forEach((n) => n.classList.remove("active"));
+        pages.forEach((p) => p.classList.remove("active"));
 
-        tab.classList.add("active");
-        const targetContent = document.getElementById(`tab-content-${tabName}`);
-        if (targetContent) {
-          targetContent.classList.add("active");
+        item.classList.add("active");
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+          targetPage.classList.add("active");
         }
       });
     });
   }
 
-  /**
-   * 绑定关于页面的按钮
-   */
   bindAboutButtons() {
     const helpBtn = document.getElementById("btn-help");
     if (helpBtn) {
@@ -474,12 +378,12 @@ class EventBinder {
     }
   }
 
-  /**
-   * 绑定复制OBS URL按钮
-   */
   bindCopyUrlButton() {
-    const copyUrlBtn = document.getElementById("btn-copy-url");
-    if (copyUrlBtn) {
+    const copyUrlBtnIds = ["btn-copy-url", "btn-copy-url-appearance"];
+    copyUrlBtnIds.forEach((btnId) => {
+      const copyUrlBtn = document.getElementById(btnId);
+      if (!copyUrlBtn) return;
+
       copyUrlBtn.addEventListener("click", () => {
         const currentUrl = window.location.href;
         const url = new URL(currentUrl);
@@ -514,16 +418,12 @@ class EventBinder {
             document.body.removeChild(textarea);
           });
       });
-    }
+    });
   }
 
-  /**
-   * 绑定切换开关
-   */
   bindToggle(toggleId, configKey) {
     const toggle = document.getElementById(toggleId);
     if (toggle) {
-      const selector = configKey === "showTitleBar" ? ".title-bar" : null;
       const collapsibleId =
         configKey === "showTitleBar"
           ? "titlebar-details"
@@ -547,13 +447,6 @@ class EventBinder {
         this.configManager.config[configKey] =
           toggle.classList.contains("active");
 
-        if (selector) {
-          ConfigApplier.setVisibility(
-            selector,
-            this.configManager.config[configKey],
-          );
-        }
-
         if (collapsibleId) {
           const collapsible = document.getElementById(collapsibleId);
           if (collapsible) {
@@ -565,33 +458,11 @@ class EventBinder {
           }
         }
 
-        if (configKey === "enableTitleBarFont") {
-          const windowTitle = document.getElementById("window-title");
-          if (windowTitle) {
-            if (this.configManager.config.enableTitleBarFont) {
-              if (this.configManager.config.windowTitleFont) {
-                windowTitle.style.fontFamily =
-                  this.configManager.config.windowTitleFont;
-              }
-              if (this.configManager.config.windowTitleFontSize) {
-                windowTitle.style.fontSize =
-                  this.configManager.config.windowTitleFontSize + "px";
-              }
-            } else {
-              windowTitle.style.fontFamily = "";
-              windowTitle.style.fontSize = "";
-            }
-          }
-        }
-
         this.configManager.scheduleSaveConfig();
       });
     }
   }
 
-  /**
-   * 切换颜色格式显示
-   */
   toggleColorFormat(toggleBtn, colorInput, valueDisplay) {
     const formats = ["hex", "rgb", "hsl"];
     let currentFormat = toggleBtn.dataset.format || "hex";
@@ -605,9 +476,6 @@ class EventBinder {
     this.updateColorDisplay(colorInput.value, valueDisplay, nextFormat);
   }
 
-  /**
-   * 更新颜色显示
-   */
   updateColorDisplay(hexColor, valueDisplay, format) {
     if (!valueDisplay) return;
 

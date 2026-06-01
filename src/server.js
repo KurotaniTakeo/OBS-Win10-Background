@@ -132,7 +132,24 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 无更新接口（保留配置相关路由）
+  // /config 路由 → 配置页面
+  if (pathname === "/config" || pathname === "/config/") {
+    const configHtml = path.join(ROOT_DIR, "public", "config.html");
+    if (fs.existsSync(configHtml)) {
+      try {
+        const content = fs.readFileSync(configHtml, "utf8");
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(content);
+        console.log("📄 访问配置页面");
+      } catch (error) {
+        console.error("❌ 读取配置页面失败:", error);
+        res.writeHead(500);
+        res.end("Internal Server Error");
+      }
+      return;
+    }
+  }
+
 
   // 静态文件服务
   const handled = handleStaticFile(req, res);
@@ -160,10 +177,9 @@ function startServer(port, attempt = 0) {
     console.log(`📡 服务地址: ${url}`);
     console.log(`📁 配置目录: ${getConfigDir()}`);
     console.log(`\n💡 使用方法：`);
-    console.log(`   1. 浏览器访问: ${url}`);
+    console.log(`   1. 配置页面: ${url}/config`);
     console.log(`   2. OBS 浏览器源: ${url}`);
-    console.log(`   3. 按 Ctrl+K 打开设置面板`);
-    console.log(`   4. 修改配置后点击保存\n`);
+    console.log(`   3. 修改配置后点击保存\n`);
     console.log(`⚙️  配置会自动保存到 config.json 文件`);
     console.log(`🛑 停止服务器: Ctrl+C\n`);
     console.log(`${"=".repeat(50)}\n`);
@@ -175,9 +191,9 @@ function startServer(port, attempt = 0) {
           ? "open"
           : "xdg-open";
 
-    exec(`${startCommand} ${url}`, (error) => {
+    exec(`${startCommand} ${url}/config`, (error) => {
       if (error) {
-        console.log(`⚠️  无法自动打开浏览器，请手动访问: ${url}`);
+        console.log(`⚠️  无法自动打开浏览器，请手动访问: ${url}/config`);
       } else {
         console.log(`✅ 浏览器已打开\n`);
       }

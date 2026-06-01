@@ -10,7 +10,6 @@ class DialogManager {
   static markdownToHtml(markdown) {
     let html = markdown;
 
-    // 处理代码块（先处理，避免被其他规则影响）
     const codeBlocks = [];
     html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
       const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`;
@@ -18,7 +17,6 @@ class DialogManager {
       return placeholder;
     });
 
-    // 处理行内代码（保护代码不被处理）
     const inlineCodes = [];
     html = html.replace(/``([^`]+?)``/g, (match, code) => {
       const placeholder = `@@INLINECODE${inlineCodes.length}@@`;
@@ -31,7 +29,6 @@ class DialogManager {
       return placeholder;
     });
 
-    // 处理 <segoe_icon> 标签（在其他规则之前处理）
     html = html.replace(
       /<segoe_icon>([A-Fa-f0-9]+)<\/segoe_icon>/g,
       (match, code) => {
@@ -39,35 +36,28 @@ class DialogManager {
       },
     );
 
-    // 处理标题（从h4到h1，避免冲突）
     html = html.replace(/^#### (.+)$/gm, "<h4>$1</h4>");
     html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
     html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
     html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
 
-    // 处理水平线
     html = html.replace(/^---$/gm, "<hr>");
 
-    // 处理加粗（在斜体之前）
     html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     html = html.replace(/__(.+?)__/g, "<strong>$1</strong>");
 
-    // 处理斜体
     html = html.replace(/\*([^*]+?)\*/g, "<em>$1</em>");
     html = html.replace(/_([^_]+?)_/g, "<em>$1</em>");
 
-    // 处理链接
     html = html.replace(
       /\[(.+?)\]\((.+?)\)/g,
       '<a href="$2" target="_blank">$1</a>',
     );
 
-    // 处理列表项
     html = html.replace(/^(\d+)\. (.+)$/gm, "<___OL___><li>$2</li>");
     html = html.replace(/^\* (.+)$/gm, "<___UL___><li>$1</li>");
     html = html.replace(/^- (.+)$/gm, "<___UL___><li>$1</li>");
 
-    // 包装连续的列表项
     html = html.replace(/(<___UL___><li>.*?<\/li>\n?)+/g, (match) => {
       return "<ul>" + match.replace(/<___UL___>/g, "") + "</ul>";
     });
@@ -75,7 +65,6 @@ class DialogManager {
       return "<ol>" + match.replace(/<___OL___>/g, "") + "</ol>";
     });
 
-    // 处理段落
     html = html
       .split(/\n\n+/)
       .map((para) => {
@@ -93,15 +82,12 @@ class DialogManager {
       })
       .join("\n");
 
-    // 清理多余的换行
     html = html.replace(/\n{3,}/g, "\n\n");
 
-    // 恢复代码块
     codeBlocks.forEach((code, index) => {
       html = html.replace(`@@CODEBLOCK${index}@@`, code);
     });
 
-    // 恢复内联代码
     inlineCodes.forEach((code, index) => {
       html = html.replace(`@@INLINECODE${index}@@`, code);
     });
@@ -133,6 +119,98 @@ class DialogManager {
         from { transform: translateY(0) scale(1); opacity: 1; }
         to { transform: translateY(6px) scale(0.98); opacity: 0; }
       }
+
+      /* 统一通知/弹窗基础样式 */
+      .app-toast {
+        position: fixed;
+        top: 20px;
+        right: -400px;
+        width: 380px;
+        background: #2d2d2d;
+        border-left: 4px solid var(--toast-accent, #0078d4);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        z-index: 10003;
+        transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s ease;
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow: hidden;
+      }
+      .app-toast.show {
+        right: 20px;
+      }
+      .app-toast-icon {
+        width: 32px;
+        height: 32px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-right: 12px;
+        font-family: 'Segoe MDL2 Assets', 'Segoe UI', sans-serif;
+      }
+      .app-toast-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 6px;
+        line-height: 1.3;
+      }
+      .app-toast-message {
+        font-size: 13px;
+        color: #e0e0e0;
+        line-height: 1.4;
+        word-wrap: break-word;
+      }
+      .app-toast-hint {
+        font-size: 12px;
+        color: #b0b0b0;
+        margin-top: 6px;
+      }
+      .app-toast-url {
+        font-size: 11px;
+        color: #b0b0b0;
+        margin-top: 6px;
+        padding: 6px 8px;
+        background: #1e1e1e;
+        border: 1px solid #3a3a3a;
+        font-family: 'Courier New', monospace;
+        word-break: break-all;
+      }
+      .app-toast-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border: none;
+        color: #999;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        line-height: 1;
+        padding: 0;
+      }
+      .app-toast-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .app-toast-progress {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 3px;
+        width: 100%;
+        background: var(--toast-accent, #0078d4);
+        transform-origin: right;
+      }
+
+      /* 模态弹窗（居中对话框） */
       .app-modal {
         position: fixed;
         top: 0;
@@ -165,7 +243,7 @@ class DialogManager {
         animation: appModalContentOut 0.2s ease forwards;
       }
       .app-modal-header {
-        padding: 12px 16px;
+        padding: 14px 20px;
         border-bottom: 1px solid #3a3a3a;
         display: flex;
         justify-content: space-between;
@@ -176,8 +254,8 @@ class DialogManager {
       .app-modal-header h3 {
         margin: 0;
         color: var(--theme-color, #0078d4);
-        font-size: 14px;
-        font-weight: 500;
+        font-size: 16px;
+        font-weight: 600;
       }
       .app-modal-close {
         background: transparent;
@@ -193,6 +271,7 @@ class DialogManager {
         transition: all 0.2s ease;
         line-height: 1;
         padding: 0;
+        font-family: 'Segoe UI', sans-serif;
       }
       .app-modal-close:hover {
         background: rgba(255, 255, 255, 0.1);
@@ -200,8 +279,8 @@ class DialogManager {
       }
       .app-modal-body {
         color: #e0e0e0;
-        line-height: 1.5;
-        padding: 16px 20px;
+        line-height: 1.6;
+        padding: 20px 24px;
         overflow-y: auto;
         flex: 1;
         font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
@@ -211,7 +290,7 @@ class DialogManager {
         color: var(--theme-color, #0078d4);
         margin: 0 0 16px 0;
         border-bottom: 1px solid #3a3a3a;
-        padding-bottom: 0;
+        padding-bottom: 8px;
         font-size: 20px;
         font-weight: 600;
       }
@@ -237,7 +316,7 @@ class DialogManager {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-family: 'Segoe MDL2 Assets', sans-serif;
+        font-family: 'Segoe MDL2 Assets', 'Segoe UI', sans-serif;
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         width: 26px;
@@ -256,10 +335,11 @@ class DialogManager {
         border-radius: 0;
         font-family: 'Courier New', monospace;
         color: #ff9d76;
+        font-size: 12px;
       }
       .app-modal-body pre {
         background: #2d2d2d;
-        padding: 10px;
+        padding: 12px;
         border-radius: 0;
         border: 1px solid #3a3a3a;
         overflow-x: auto;
@@ -282,7 +362,7 @@ class DialogManager {
       .app-modal-body p {
         margin: 8px 0;
         font-size: 13px;
-        line-height: 1.5;
+        line-height: 1.6;
       }
       .app-modal-body strong {
         color: var(--theme-color, #0078d4);
@@ -299,7 +379,7 @@ class DialogManager {
         display: flex;
         justify-content: flex-end;
         gap: 10px;
-        padding: 12px 16px;
+        padding: 14px 20px;
         border-top: 1px solid #3a3a3a;
         background: #252525;
       }
@@ -313,6 +393,7 @@ class DialogManager {
         transition: all 0.2s ease;
         background: #2d2d2d;
         color: #e0e0e0;
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
       }
       .app-modal-btn:hover {
         background: #3a3a3a;
@@ -393,78 +474,141 @@ class DialogManager {
     }, 200);
   }
 
-  /**
-   * 显示首次启动帮助模态框
-   * @param {Function} onConfirm - 确认回调函数
-   */
+  static getDefaultHelpContent() {
+    return [
+      "# 使用说明",
+      "",
+      "## 快速开始",
+      "",
+      "1. 在浏览器中打开 **配置页面** 设置各项外观参数",
+      "2. 点击 **保存配置** 保存到服务器",
+      "3. 在 OBS 中添加 **浏览器源**，URL 填 `http://localhost:3000/`",
+      "4. 将浏览器源的 **宽度和高度** 设置为你的 OBS 画布分辨率",
+      "",
+      "## 图标设置",
+      "",
+      "本项目使用 Windows 内置的 **Segoe MDL2 Assets** 字体来渲染图标，",
+      "每个图标对应一个 Unicode 码位（如 `&#xE713;` 表示设置齿轮图标）。",
+      "",
+      "- **Mac 用户**请先下载安装字体：[获取 Segoe 字体](https://aka.ms/SegoeFonts)",
+      "- 图标使用 HTML 实体格式输入，如 `&#xE713;`",
+      "- 图标列表参考：[Microsoft Docs](https://learn.microsoft.com/zh-cn/windows/apps/design/iconography/segoe-ui-symbol-font)",
+      "",
+      "常用图标：",
+      "- <segoe_icon>E700</segoe_icon> 导航按钮",
+      "- <segoe_icon>E713</segoe_icon> 设置",
+      "- <segoe_icon>E7FC</segoe_icon> 游戏",
+      "- <segoe_icon>E8BD</segoe_icon> 消息",
+      "- <segoe_icon>E90B</segoe_icon> 音乐",
+      "- <segoe_icon>E921</segoe_icon> 最小化",
+      "- <segoe_icon>E923</segoe_icon> 最大化",
+      "- <segoe_icon>E8BB</segoe_icon> 关闭",
+      "- <segoe_icon>E713</segoe_icon> 设置",
+      "",
+      "## 配置页面布局",
+      "",
+      "- **全局外观**：主题颜色、字体名称",
+      "- **侧栏设置**：侧栏背景色、Logo 图标、导航图标、底部图标",
+      "- **标题栏设置**：显示/隐藏、窗口标题、字体设置、按钮",
+      "- **关于**：版本信息、快速操作",
+      "",
+      "## 快捷键",
+      "",
+      "配置页面 `Ctrl+S` 保存配置",
+    ].join("\n");
+  }
+
+  static getDefaultChangelogContent() {
+    return [
+      "# 更新说明",
+      "",
+      "## v1.0.6",
+      "",
+      "- 重构：场景页与配置页分离",
+      "- 配置页改为全页面布局，左侧导航 + 右侧内容",
+      "- 统一弹窗和通知样式",
+      "- 更新 Segoe MDL2 Assets 图标支持",
+      "",
+      "## v1.0.5 及更早",
+      "",
+      "- Windows 10 WinUI 风格 OBS 直播背景",
+      "- 支持自定义主题色、侧栏外观、标题栏",
+      "- 支持 Segoe MDL2 Assets 图标字体",
+      "- 零依赖 Node.js 配置服务器",
+    ].join("\n");
+  }
+
   static async showFirstLaunchModal(onConfirm) {
+    let helpContent = null;
     try {
       const response = await fetch("/docs/README.md");
-      if (!response.ok) {
-        throw new Error("无法加载帮助文档");
+      if (response.ok) {
+        helpContent = await response.text();
       }
-      const helpContent = await response.text();
-      const htmlContent = DialogManager.markdownToHtml(helpContent);
-
-      const { modal, bodyDiv, footerDiv } = DialogManager.createModalShell({
-        title: "使用说明",
-        maxWidth: "800px",
-        maxHeight: "80vh",
-      });
-
-      bodyDiv.innerHTML = htmlContent;
-
-      const confirmBtn = document.createElement("button");
-      confirmBtn.className = "app-modal-btn app-modal-btn-primary";
-      confirmBtn.textContent = "我已了解，开始使用 →";
-      confirmBtn.addEventListener("click", async () => {
-        DialogManager.closeModal(modal);
-        if (onConfirm) await onConfirm();
-      });
-
-      footerDiv.appendChild(confirmBtn);
-    } catch (error) {
-      console.error("❌ 显示帮助模态框失败:", error);
+    } catch (err) {
+      console.log("📖 使用在线帮助内容");
     }
+
+    if (!helpContent) {
+      helpContent = DialogManager.getDefaultHelpContent();
+    }
+
+    const htmlContent = DialogManager.markdownToHtml(helpContent);
+
+    const { modal, bodyDiv, footerDiv } = DialogManager.createModalShell({
+      title: "使用说明",
+      maxWidth: "800px",
+      maxHeight: "80vh",
+    });
+
+    bodyDiv.innerHTML = htmlContent;
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.className = "app-modal-btn app-modal-btn-primary";
+    confirmBtn.textContent = "我已了解，开始使用 →";
+    confirmBtn.addEventListener("click", async () => {
+      DialogManager.closeModal(modal);
+      if (onConfirm) await onConfirm();
+    });
+
+    footerDiv.appendChild(confirmBtn);
   }
 
-  /**
-   * 显示更新说明弹窗
-   */
   static async showChangelogModal() {
+    let changelogContent = null;
     try {
       const response = await fetch("/docs/CHANGELOG.md");
-      if (!response.ok) {
-        throw new Error("无法加载更新说明");
+      if (response.ok) {
+        changelogContent = await response.text();
       }
-      const changelog = await response.text();
-      const htmlContent = DialogManager.markdownToHtml(changelog);
-
-      const { modal, bodyDiv, footerDiv } = DialogManager.createModalShell({
-        title: "更新说明",
-        maxWidth: "700px",
-        maxHeight: "70vh",
-      });
-
-      bodyDiv.innerHTML = htmlContent;
-
-      const closeBtn = document.createElement("button");
-      closeBtn.className = "app-modal-btn";
-      closeBtn.textContent = "关闭";
-      closeBtn.addEventListener("click", () => {
-        DialogManager.closeModal(modal);
-      });
-
-      footerDiv.appendChild(closeBtn);
-    } catch (error) {
-      console.error("❌ 显示更新说明失败:", error);
+    } catch (err) {
+      console.log("📝 使用内置更新说明");
     }
+
+    if (!changelogContent) {
+      changelogContent = DialogManager.getDefaultChangelogContent();
+    }
+
+    const htmlContent = DialogManager.markdownToHtml(changelogContent);
+
+    const { modal, bodyDiv, footerDiv } = DialogManager.createModalShell({
+      title: "更新说明",
+      maxWidth: "700px",
+      maxHeight: "70vh",
+    });
+
+    bodyDiv.innerHTML = htmlContent;
+
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "app-modal-btn";
+    closeBtn.textContent = "关闭";
+    closeBtn.addEventListener("click", () => {
+      DialogManager.closeModal(modal);
+    });
+
+    footerDiv.appendChild(closeBtn);
   }
 
-  /**
-   * 显示恢复默认配置确认对话框
-   * @param {Function} onConfirm - 确认回调函数
-   */
   static showResetConfirmDialog(onConfirm) {
     const { modal, bodyDiv, footerDiv } = DialogManager.createModalShell({
       title: "恢复默认配置",
@@ -502,11 +646,6 @@ class DialogManager {
     footerDiv.appendChild(confirmBtn);
   }
 
-  /**
-   * 显示更新确认对话框
-   * @param {Object} options - 更新信息
-   * @returns {Promise<boolean>} 是否确认更新
-   */
   static showUpdateConfirmDialog({
     currentVersion,
     latestVersion,

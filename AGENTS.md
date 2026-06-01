@@ -18,33 +18,53 @@ On Windows you can also double-click `启动服务器.bat`.
 
 - **Entrypoint:** `src/server.js` — raw `http` module, no framework
 - **Frontend:** `public/` — vanilla JS, no bundler, no build step
+- **Scene page:** `/` → `public/index.html` — OBS browser source (display only)
+- **Config page:** `/config` → `public/config.html` — full-page settings UI
 - **Config API:** `GET/POST /api/config`, `POST /api/config/reset`
-- **Config file:** `src/config/config.json` (auto-created from `config.default.json`)
+- **Config file:** `configs/config.json` (auto-created from `config.default.json`)
 - Legacy config at project root is migrated automatically on first run
 
-## JS load order (index.html is order-sensitive)
+## Page structure
 
+### Scene page (`/` — `index.html`)
+Minimal page for OBS browser source. Loads config from API and renders sidebar/titlebar/icons.
+- Bottom gear icon opens `/config` in a new tab
+- No config editing UI, no keyboard shortcuts
+- Only loads: `color-utils.js`, `config-applier.js`, `scene-init.js`
+
+### Config page (`/config` — `config.html`)
+Full-page settings UI with left navigation + right content layout.
+- Left nav: 全局外观 / 侧栏设置 / 标题栏设置 / 关于
+- Loads all JS modules for config editing
+- Keyboard shortcut: `Ctrl+S` to save
+
+## JS load order
+
+### Scene page (index.html)
+1. `utils/color-utils.js`
+2. `utils/config-applier.js`
+3. `scene-init.js` (loads config, applies to DOM, binds gear icon)
+
+### Config page (config.html)
 1. `utils/color-utils.js`
 2. `utils/notification-manager.js`
 3. `utils/dialog-manager.js`
 4. `utils/api-service.js`
-5. `utils/config-applier.js`
-6. `utils/event-binder.js`
-7. `config-manager.js` (last — instantiates `ConfigManager` globally)
+5. `utils/update-checker.js`
+6. `utils/config-applier.js`
+7. `utils/event-binder.js`
+8. `config-manager.js` (last — instantiates `ConfigManager` globally)
 
-## Key shortcuts (in the browser source)
+## Key shortcuts (config page only)
 
 | Keys | Action |
 |------|--------|
-| `Ctrl+K` / `Ctrl+Shift+O` | Toggle config panel |
 | `Ctrl+S` | Save config |
-| `Ctrl+C` | Copy OBS browser source URL (when no text selected) |
-| `Esc` | Close config panel |
 
 ## Gotchas
 
 - **Segoe MDL2 Assets** font is Windows-only; icons use its unicode codepoints
-- Server auto-opens a browser on start (Cross-platform: `start`/`open`/`xdg-open`)
+- Server auto-opens browser to `/config` on start (Cross-platform: `start`/`open`/`xdg-open`)
 - Port fallback: tries `PORT` env var, then 3000, incrementing up to 10 attempts
 - No tests, no linter, no typechecker, no CI configured in this repo
 - CSS variable `background-color: transparent` is required for OBS chroma key
