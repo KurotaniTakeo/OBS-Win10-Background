@@ -346,188 +346,6 @@ class NotificationManager {
   }
 
   /**
-   * 显示更新提示通知
-   * @param {Object} options - 更新信息
-   */
-  showUpdateNotification({
-    currentVersion,
-    latestVersion,
-    releaseUrl,
-    themeColor = "#0078d4",
-  }) {
-    const notification = document.createElement("div");
-    const bgColor = "#2d2d2d";
-    const accentColor = themeColor;
-    const icon = "⬆";
-    const duration = 8000;
-
-    const lightenColor = (hex) => {
-      const rgb = parseInt(hex.slice(1), 16);
-      const r = Math.min(255, ((rgb >> 16) & 255) + 40);
-      const g = Math.min(255, ((rgb >> 8) & 255) + 40);
-      const b = Math.min(255, (rgb & 255) + 40);
-      return `rgb(${r}, ${g}, ${b})`;
-    };
-    const lightAccentColor = lightenColor(accentColor);
-
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: -400px;
-      width: 360px;
-      background: ${bgColor};
-      border-left: 4px solid ${accentColor};
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), inset 3px 3px 0 0 ${lightAccentColor}, inset -3px -3px 0 0 ${lightAccentColor}, inset 3px -3px 0 0 ${lightAccentColor}, inset -3px 3px 0 0 ${lightAccentColor};
-      z-index: 10003;
-      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s ease;
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow: hidden;
-    `;
-
-    notification.innerHTML = `
-      <div style="display: flex; padding: 16px 16px 12px 16px; align-items: flex-start; position: relative;">
-        <div style="
-          width: 32px;
-          height: 32px;
-          background: ${accentColor};
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 16px;
-          font-weight: bold;
-          flex-shrink: 0;
-          margin-right: 12px;
-        ">${icon}</div>
-        <div style="flex: 1; min-width: 0;">
-          <div style="
-            font-size: 14px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 6px;
-            line-height: 1.3;
-          ">发现新版本</div>
-          <div style="
-            font-size: 13px;
-            color: #e0e0e0;
-            line-height: 1.4;
-            word-wrap: break-word;
-          ">当前 ${currentVersion} → 最新 ${latestVersion}</div>
-          <button class="toast-update-btn" style="
-            margin-top: 8px;
-            padding: 6px 12px;
-            font-size: 12px;
-            border: 1px solid ${accentColor};
-            background: transparent;
-            color: ${accentColor};
-            cursor: pointer;
-          ">查看更新</button>
-        </div>
-        <button class="toast-close-btn" style="
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          width: 24px;
-          height: 24px;
-          background: transparent;
-          border: none;
-          color: #999;
-          font-size: 16px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s ease;
-          line-height: 1;
-          padding: 0;
-        " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='#999';">✕</button>
-      </div>
-      <div class="toast-progress-bar" style="
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        height: 3px;
-        width: 100%;
-        background: ${accentColor};
-        transform-origin: right;
-      "></div>
-    `;
-
-    document.body.appendChild(notification);
-
-    const progressBar = notification.querySelector(".toast-progress-bar");
-    const closeBtn = notification.querySelector(".toast-close-btn");
-    const updateBtn = notification.querySelector(".toast-update-btn");
-
-    const notificationObj = {
-      element: notification,
-      progressBar: progressBar,
-      startTime: Date.now(),
-      duration: duration,
-      elapsedBeforePause: 0,
-      isPaused: false,
-      timer: null,
-    };
-
-    this.notificationContainer.push(notificationObj);
-    this.updateNotificationPositions();
-
-    requestAnimationFrame(() => {
-      notification.style.right = "20px";
-    });
-
-    const startCountdown = () => {
-      if (notificationObj.isPaused) return;
-
-      const elapsed = Date.now() - notificationObj.startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      progressBar.style.transform = `scaleX(${1 - progress})`;
-
-      if (progress >= 1) {
-        this.removeNotification(notificationObj);
-      } else {
-        notificationObj.timer = requestAnimationFrame(startCountdown);
-      }
-    };
-
-    notification.addEventListener("mouseenter", () => {
-      if (notificationObj.isPaused) return;
-      notificationObj.isPaused = true;
-      notificationObj.elapsedBeforePause =
-        Date.now() - notificationObj.startTime;
-
-      if (notificationObj.timer) {
-        cancelAnimationFrame(notificationObj.timer);
-        notificationObj.timer = null;
-      }
-      progressBar.style.transition = "none";
-    });
-
-    notification.addEventListener("mouseleave", () => {
-      if (!notificationObj.isPaused) return;
-      notificationObj.isPaused = false;
-      notificationObj.startTime =
-        Date.now() - notificationObj.elapsedBeforePause;
-      startCountdown();
-    });
-
-    closeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      this.removeNotification(notificationObj);
-    });
-
-    if (updateBtn && releaseUrl) {
-      updateBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        window.open(releaseUrl, "_blank");
-      });
-    }
-
-    startCountdown();
-  }
-
-  /**
    * 更新所有通知的位置（堆叠）
    */
   updateNotificationPositions() {
@@ -569,20 +387,15 @@ class NotificationManager {
   }
 
   /**
-   * 显示更新检查结果通知
-   * @param {Object} options - 通知内容
+   * 显示配置切换成功通知
+   * @param {string} themeColor - 主题颜色
    */
-  showUpdateStatusNotification({
-    title,
-    message,
-    themeColor = "#0078d4",
-    isError = false,
-  }) {
+  showProfileSwitchNotification(themeColor = "#0078d4") {
     const notification = document.createElement("div");
     const bgColor = "#2d2d2d";
-    const accentColor = isError ? "#e81123" : themeColor;
-    const icon = isError ? "✕" : "✓";
-    const duration = 3500;
+    const accentColor = themeColor;
+    const icon = "✓";
+    const duration = 3000;
 
     const lightenColor = (hex) => {
       const rgb = parseInt(hex.slice(1), 16);
@@ -629,13 +442,13 @@ class NotificationManager {
             color: #ffffff;
             margin-bottom: 6px;
             line-height: 1.3;
-          ">${title}</div>
+          ">配置切换成功</div>
           <div style="
             font-size: 13px;
             color: #e0e0e0;
             line-height: 1.4;
             word-wrap: break-word;
-          ">${message}</div>
+          ">配置已切换，外观已更新</div>
         </div>
         <button class="toast-close-btn" style="
           position: absolute;

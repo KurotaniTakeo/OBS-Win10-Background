@@ -63,7 +63,30 @@
                 <div class="config-hint">1. 点击复制URL地址<br>2. 在OBS中添加“浏览器”源并粘贴此URL<br>3. 浏览器源的高度和宽度设置为您的OBS画布分辨率</div>
             </div>
         </div>
+        <!-- ========== 配置管理 ========== -->
+        <div class="config-section-group">
+            <div class="config-group-title"><span class="group-title-icon">&#xE8B7;</span><span>配置管理</span></div>
+            
+            <div class="config-section">
+                <label class="config-label">当前配置</label>
+                <div class="profile-selector-wrapper">
+                    <select class="config-input profile-selector" id="profile-selector">
+                        <option value="default">默认配置</option>
+                    </select>
+                </div>
+                <div class="config-hint">切换配置后会自动应用</div>
+            </div>
 
+            <div class="config-section">
+                <div class="profile-actions">
+                    <button class="profile-action-btn" id="btn-new-profile" title="新建配置"><span class="btn-icon">&#xE710;</span><span>新建</span></button>
+                    <button class="profile-action-btn" id="btn-rename-profile" title="重命名配置"><span class="btn-icon">&#xE8AC;</span><span>重命名</span></button>
+                    <button class="profile-action-btn" id="btn-duplicate-profile" title="复制配置"><span class="btn-icon">&#xE8C8;</span><span>复制</span></button>
+                    <button class="profile-action-btn profile-action-btn-danger" id="btn-delete-profile" title="删除配置"><span class="btn-icon">&#xE74D;</span><span>删除</span></button>
+                </div>
+                <div class="config-hint">默认配置不可删除和重命名</div>
+            </div>
+        </div>
         <div class="config-section-group">
             <div class="config-group-title"><span class="group-title-icon">&#xE2B1;</span><span>全局外观设置</span></div>
             

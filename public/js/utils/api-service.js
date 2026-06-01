@@ -136,38 +136,93 @@ class ApiService {
   }
 
   /**
-   * 检查更新（服务器端）
-   * @returns {Promise<Object>} 更新检查结果
+   * 获取所有配置列表
+   * @returns {Promise<Array>} 配置列表
    */
-  async checkUpdate() {
+  async getProfiles() {
     try {
       const response = await fetch(
-        `${this.apiBaseUrl}/update/check?t=${Date.now()}`,
+        `${this.apiBaseUrl}/profiles?t=${Date.now()}`,
       );
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      return await response.json();
+      const result = await response.json();
+      return result.profiles || [];
     } catch (error) {
-      console.warn("⚠️ 检查更新失败:", error.message);
+      console.error("❌ 获取配置列表失败:", error);
       throw error;
     }
   }
 
   /**
-   * 应用更新（下载并替换 public 目录）
-   * @param {Object} payload - 更新参数
-   * @param {string} payload.repo - GitHub 仓库
-   * @returns {Promise<Object>} 服务器响应
+   * 切换配置
+   * @param {string} profileId - 配置ID
+   * @returns {Promise<Object>} 切换后的配置
    */
-  async applyUpdate(payload = {}) {
+  async switchProfile(profileId) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/update/apply`, {
+      const response = await fetch(`${this.apiBaseUrl}/profiles/switch`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ profileId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result.config;
+    } catch (error) {
+      console.error("❌ 配置切换失败:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 新建配置
+   * @param {string} name - 配置名称
+   * @returns {Promise<Object>} 新建的配置信息 { id, name }
+   */
+  async createProfile(name) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/profiles/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result.profile;
+    } catch (error) {
+      console.error("❌ 配置创建失败:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 重命名配置
+   * @param {string} profileId - 配置ID
+   * @param {string} newName - 新名称
+   * @returns {Promise<Object>} 服务器响应
+   */
+  async renameProfile(profileId, newName) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/profiles/rename`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ profileId, newName }),
       });
 
       if (!response.ok) {
@@ -176,7 +231,60 @@ class ApiService {
 
       return await response.json();
     } catch (error) {
-      console.error("❌ 更新应用失败:", error);
+      console.error("❌ 配置重命名失败:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 复制配置
+   * @param {string} profileId - 配置ID
+   * @returns {Promise<Object>} 新配置信息 { id, name }
+   */
+  async duplicateProfile(profileId) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/profiles/duplicate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ profileId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result.profile;
+    } catch (error) {
+      console.error("❌ 配置复制失败:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 删除配置
+   * @param {string} profileId - 配置ID
+   * @returns {Promise<Object>} 服务器响应
+   */
+  async deleteProfile(profileId) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/profiles/delete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ profileId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ 配置删除失败:", error);
       throw error;
     }
   }

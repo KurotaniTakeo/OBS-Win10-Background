@@ -463,6 +463,7 @@ class EventBinder {
       });
     }
 
+
     const resetBtn = document.getElementById("btn-reset");
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
@@ -622,6 +623,54 @@ class EventBinder {
         const hsl = ColorUtils.hexToHsl(hexColor);
         valueDisplay.value = `hsl(${hsl.h}°, ${hsl.s}%, ${hsl.l}%)`;
         break;
+    }
+  }
+
+  /**
+   * 绑定配置管理事件
+   */
+  bindProfileEvents() {
+    // 配置选择器
+    const profileSelector = document.getElementById("profile-selector");
+    if (profileSelector) {
+      profileSelector.addEventListener("change", (e) => {
+        const profileId = e.target.value;
+        this.configManager.switchProfile(profileId);
+      });
+    }
+
+    // 新建配置按钮
+    const newProfileBtn = document.getElementById("btn-new-profile");
+    if (newProfileBtn) {
+      newProfileBtn.addEventListener("click", () => {
+        this.configManager.createProfile();
+      });
+    }
+
+    // 重命名配置按钮
+    const renameProfileBtn = document.getElementById("btn-rename-profile");
+    if (renameProfileBtn) {
+      renameProfileBtn.addEventListener("click", () => {
+        this.configManager.renameProfile();
+      });
+    }
+
+    // 复制配置按钮
+    const duplicateProfileBtn = document.getElementById(
+      "btn-duplicate-profile",
+    );
+    if (duplicateProfileBtn) {
+      duplicateProfileBtn.addEventListener("click", () => {
+        this.configManager.duplicateProfile();
+      });
+    }
+
+    // 删除配置按钮
+    const deleteProfileBtn = document.getElementById("btn-delete-profile");
+    if (deleteProfileBtn) {
+      deleteProfileBtn.addEventListener("click", () => {
+        this.configManager.deleteProfile();
+      });
     }
   }
 }
