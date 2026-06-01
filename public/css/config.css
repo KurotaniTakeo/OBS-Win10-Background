@@ -60,9 +60,9 @@ html {
 }
 
 .config-topbar-btn {
-  padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 0;
   color: inherit;
   font-size: 13px;
@@ -75,7 +75,18 @@ html {
 }
 
 .config-topbar-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#btn-save-topbar {
   background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+#btn-save-topbar:hover {
+  background: rgba(255, 255, 255, 0.38);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .config-topbar-btn .btn-icon {
@@ -174,9 +185,9 @@ html {
 }
 
 /* ========== 复制 URL 区域 ========== */
-.copy-url-section {
+.config-page .copy-url-section.config-section {
   margin-bottom: 28px;
-  padding: 20px;
+  padding: 20px 28px;
   background-color: #1e1e1e;
   border: 1px solid rgb(50, 50, 50);
   border-bottom: 1px solid rgb(40, 40, 40);

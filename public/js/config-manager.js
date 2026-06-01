@@ -269,6 +269,7 @@ class ConfigManager {
 
       await this.loadConfig();
       ConfigApplier.applyConfig(this.config);
+      this.syncUIFromConfig();
       this.notificationManager.showSaveNotification(
         true,
         "配置已恢复为默认值，请刷新页面",
@@ -288,7 +289,7 @@ class ConfigManager {
     window.addEventListener(
       "keydown",
       (e) => {
-        if (e.ctrlKey && !e.shiftKey && e.key === "s") {
+        if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "s") {
           e.preventDefault();
           this.saveConfig({ showNotification: true });
           return;
@@ -297,7 +298,7 @@ class ConfigManager {
       true,
     );
 
-    console.log("✅ 快捷键已绑定: Ctrl+S 保存配置");
+    console.log("✅ 快捷键已绑定: Ctrl+S / Cmd+S 保存配置");
   }
 
   get(key) {
@@ -308,6 +309,65 @@ class ConfigManager {
     this.config[key] = value;
     ConfigApplier.applyConfig(this.config);
     this.scheduleSaveConfig();
+  }
+
+  syncUIFromConfig() {
+    const c = this.config;
+    const get = (id) => document.getElementById(id);
+
+    const fontFamily = get("font-family");
+    if (fontFamily) fontFamily.value = c.fontFamily || "";
+
+    const themeColor = get("theme-color");
+    if (themeColor) themeColor.value = c.themeColor || "#0078d4";
+    const themeColorValue = get("theme-color-value");
+    if (themeColorValue) themeColorValue.value = c.themeColor || "#0078d4";
+
+    const sidebarBgColor = get("sidebar-bg-color");
+    if (sidebarBgColor) {
+      sidebarBgColor.value = ColorUtils.rgbToHex(c.sidebarBgColor || "rgb(20, 20, 30)");
+    }
+    const sidebarBgColorValue = get("sidebar-bg-color-value");
+    if (sidebarBgColorValue) {
+      sidebarBgColorValue.value = ColorUtils.rgbToHex(c.sidebarBgColor || "rgb(20, 20, 30)");
+    }
+
+    const logoIcon = get("logo-icon-input");
+    if (logoIcon) logoIcon.value = c.logoIcon || "";
+
+    const navIcons = get("nav-icons-input");
+    if (navIcons) navIcons.value = c.navIconsBlack || "";
+
+    const bottomIcon = get("bottom-icon-input");
+    if (bottomIcon) bottomIcon.value = c.bottomIcon || "";
+
+    const windowTitle = get("window-title-input");
+    if (windowTitle) windowTitle.value = c.windowTitle || "";
+
+    const windowTitleFont = get("window-title-font-input");
+    if (windowTitleFont) windowTitleFont.value = c.windowTitleFont || "";
+
+    const windowTitleFontSize = get("window-title-font-size-input");
+    if (windowTitleFontSize) windowTitleFontSize.value = c.windowTitleFontSize || 18;
+
+    const titleBarButtons = get("titlebar-buttons-input");
+    if (titleBarButtons) titleBarButtons.value = c.titleBarButtons || "";
+
+    const toggleTitlebar = get("toggle-titlebar");
+    if (toggleTitlebar) {
+      toggleTitlebar.classList.toggle("active", !!c.showTitleBar);
+      const details = get("titlebar-details");
+      if (details) details.classList.toggle("collapsed", !c.showTitleBar);
+    }
+
+    const toggleTitlebarFont = get("toggle-titlebar-font");
+    if (toggleTitlebarFont) {
+      toggleTitlebarFont.classList.toggle("active", !!c.enableTitleBarFont);
+      const fontDetails = get("titlebar-font-details");
+      if (fontDetails) fontDetails.classList.toggle("collapsed", !c.enableTitleBarFont);
+    }
+
+    console.log("🔄 配置项 UI 已同步");
   }
 
   /**
@@ -388,6 +448,7 @@ class ConfigManager {
       const newConfig = await this.apiService.switchProfile(profileId);
       this.config = newConfig;
       ConfigApplier.applyConfig(this.config);
+      this.syncUIFromConfig();
 
       // 更新按钮状态
       this.updateProfileButtonStates();
