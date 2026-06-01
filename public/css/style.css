@@ -807,3 +807,111 @@ body.titlebar-hidden .config-panel {
   font-size: 12px;
   color: #666;
 }
+
+/* ==================== 配置管理样式 ==================== */
+.profile-selector-wrapper {
+  position: relative;
+}
+
+.profile-selector {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  background: #2d2d2d;
+  border: 2px solid #666666;
+  border-radius: 0;
+  color: #e0e0e0;
+  font-size: 14px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: all 0.2s ease;
+}
+
+.profile-selector:hover {
+  background: #3a3a3a;
+  border-color: #999999;
+}
+
+.profile-selector:focus {
+  outline: none;
+  border-color: var(--theme-color, #0078d4);
+  background: #3a3a3a;
+}
+
+/* 下拉箭头 */
+.profile-selector-wrapper::after {
+  content: "\E70D";
+  font-family: "Segoe MDL2 Assets";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #999;
+  font-size: 12px;
+}
+
+/* 配置操作按钮容器 */
+.profile-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* 配置操作按钮 */
+.profile-action-btn {
+  padding: 10px 12px;
+  background: #2d2d2d;
+  border: 2px solid #666666;
+  border-radius: 0;
+  color: #e0e0e0;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.profile-action-btn .btn-icon {
+  font-family: "Segoe MDL2 Assets", "Segoe UI";
+  font-size: 16px;
+  line-height: 1;
+}
+
+.profile-action-btn:hover:not(:disabled) {
+  background: #3a3a3a;
+  border-color: #999999;
+  color: #ffffff;
+}
+
+.profile-action-btn:active:not(:disabled) {
+  background: var(--theme-color, #0078d4);
+  border-color: var(--theme-color, #0078d4);
+  color: #ffffff;
+}
+
+.profile-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 删除按钮特殊样式 */
+.profile-action-btn-danger {
+  border-color: #666666;
+}
+
+.profile-action-btn-danger:hover:not(:disabled) {
+  background: #3a3a3a;
+  border-color: #999999;
+  color: #ff6b7a;
+}
+
+.profile-action-btn-danger:active:not(:disabled) {
+  background: #e81123;
+  border-color: #e81123;
+  color: #ffffff;
+}
