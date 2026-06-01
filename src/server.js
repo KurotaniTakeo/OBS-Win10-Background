@@ -4,6 +4,8 @@
  */
 
 const http = require("http");
+const path = require("path");
+const fs = require("fs");
 const { exec } = require("child_process");
 const { spawn } = require("child_process");
 const { ensureConfigDir, getConfigDir } = require("./config/manager");
@@ -20,6 +22,9 @@ const {
   handleDeleteProfile,
 } = require("./routes/config");
 const { handleStaticFile } = require("./middleware/static");
+
+// 项目根目录
+const ROOT_DIR = path.resolve(__dirname, "..");
 
 // 服务器配置
 const DEFAULT_PORT = 3000;
