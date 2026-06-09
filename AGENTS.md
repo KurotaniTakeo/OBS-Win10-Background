@@ -3,40 +3,54 @@
 ## What this is
 
 A Windows 10 Fluent Design-style OBS livestream background template.  
-Plain HTML/CSS/JS frontend + a zero-dependency Node.js config server.
+Plain HTML/CSS/JS frontend + a Node.js config server.
 
 ## Quick start
 
 ```bash
+npm install                 # needed — has adm-zip dependency
 node src/server.js          # starts on port 3000, tries up to 3010 if busy
 ```
 
-No `npm install` needed — zero runtime dependencies.  
 On Windows you can also double-click `启动服务器.bat`.
 
 ## Architecture
 
 - **Entrypoint:** `src/server.js` — raw `http` module, no framework
 - **Frontend:** `public/` — vanilla JS, no bundler, no build step
+- **Server modules:**
+  - `src/routes/` — API handlers (`config.js`, `version.js`)
+  - `src/middleware/` — static file serving (`static.js`)
+  - `src/config/` — config manager + app info (`manager.js`, `app-info.js`)
+  - `src/utils/` — shared helpers (`file.js`, `http.js`, `version.js`)
 - **Scene page:** `/` → `public/index.html` — OBS browser source (display only)
 - **Config page:** `/config` → `public/config.html` — full-page settings UI
-- **Config API:** `GET/POST /api/config`, `POST /api/config/reset`
-- **Config file:** `configs/config.json` (auto-created from `config.default.json`)
-- Legacy config at project root is migrated automatically on first run
 
-## Page structure
+## API endpoints
 
-### Scene page (`/` — `index.html`)
-Minimal page for OBS browser source. Loads config from API and renders sidebar/titlebar/icons.
-- Bottom gear icon opens `/config` in a new tab
-- No config editing UI, no keyboard shortcuts
-- Only loads: `color-utils.js`, `config-applier.js`, `scene-init.js`
+- `GET/POST /api/config` — read/save current profile config
+- `POST /api/config/reset` — reset to defaults
+- `GET /api/profiles` — list all profiles
+- `POST /api/profiles/switch` — switch active profile (`{ profileId }`)
+- `POST /api/profiles/create` — new profile (`{ name }`)
+- `POST /api/profiles/rename` — rename (`{ profileId, newName }`)
+- `POST /api/profiles/duplicate` — duplicate (`{ profileId }`)
+- `POST /api/profiles/delete` — delete (`{ profileId }`)
+- `GET /api/version` — app version + repo URL
 
-### Config page (`/config` — `config.html`)
-Full-page settings UI with left navigation + right content layout.
-- Left nav: 全局外观 / 侧栏设置 / 标题栏设置 / 关于
-- Loads all JS modules for config editing
-- Keyboard shortcut: `Ctrl+S` to save
+## Config format
+
+`configs/config.json` uses a multi-profile structure:
+```json
+{
+  "currentProfile": "default",
+  "profiles": {
+    "default": { "name": "默认配置", "isDefault": true, "config": { ... } }
+  }
+}
+```
+Old flat config files (root dir, `src/config/`) are auto-migrated on first run.  
+`isFirstLaunch` is a global field, not per-profile.
 
 ## JS load order
 
@@ -50,7 +64,7 @@ Full-page settings UI with left navigation + right content layout.
 2. `utils/notification-manager.js`
 3. `utils/dialog-manager.js`
 4. `utils/api-service.js`
-5. `utils/update-checker.js`
+5. `utils/update-checker.js` ⚠️ referenced in HTML but file is missing
 6. `utils/config-applier.js`
 7. `utils/event-binder.js`
 8. `config-manager.js` (last — instantiates `ConfigManager` globally)
@@ -59,7 +73,9 @@ Full-page settings UI with left navigation + right content layout.
 
 | Keys | Action |
 |------|--------|
-| `Ctrl+S` | Save config |
+| `Ctrl+S` / `Cmd+S` | Save config |
+
+Only `Ctrl+S` is implemented. The README lists older shortcuts (Ctrl+K, Esc, etc.) that no longer exist in the code.
 
 ## Gotchas
 
@@ -68,3 +84,4 @@ Full-page settings UI with left navigation + right content layout.
 - Port fallback: tries `PORT` env var, then 3000, incrementing up to 10 attempts
 - No tests, no linter, no typechecker, no CI configured in this repo
 - CSS variable `background-color: transparent` is required for OBS chroma key
+- `configs/` dir and `configs/config.json` are gitignored; only `configs/config.default.json` is tracked
