@@ -4,6 +4,7 @@
 class EventBinder {
   constructor(configManager) {
     this.configManager = configManager;
+    this.iconPicker = new IconPicker(configManager);
   }
 
   bindConfigEvents() {
@@ -182,65 +183,13 @@ class EventBinder {
   }
 
   bindIconSettings() {
-    this.bindIconInput("logo-icon-input", "logoIcon", "#logo-icon");
-    this.bindIconInput(
-      "nav-icons-input",
-      "navIconsBlack",
-      null,
-      "renderNavIcons",
-    );
-    this.bindIconInput("bottom-icon-input", "bottomIcon", "#bottom-icon");
-  }
-
-  bindIconInput(inputId, configKey, elementSelector, callbackMethod) {
-    const input = document.getElementById(inputId);
-    if (input) {
-      input.value = this.configManager.config[configKey] || "";
-      input.addEventListener("change", (e) => {
-        this.configManager.config[configKey] = e.target.value;
-
-        const defaultValues = { logoIcon: "\uE700", bottomIcon: "\uE713" };
-        const valueToApply =
-          e.target.value.trim() || defaultValues[configKey] || e.target.value;
-
-        if (callbackMethod && callbackMethod === "renderNavIcons") {
-          ConfigApplier.renderNavIcons(
-            e.target.value,
-            this.configManager.config.sidebarBgColor,
-          );
-        } else if (
-          callbackMethod &&
-          typeof ConfigApplier[callbackMethod] === "function"
-        ) {
-          ConfigApplier[callbackMethod](e.target.value);
-        } else if (elementSelector) {
-          const element = document.querySelector(elementSelector);
-          if (element) {
-            element.textContent = valueToApply;
-          }
-        }
-        this.configManager.scheduleSaveConfig();
-      });
-
-      if (this.configManager.config[configKey]) {
-        if (callbackMethod && callbackMethod === "renderNavIcons") {
-          ConfigApplier.renderNavIcons(
-            this.configManager.config[configKey],
-            this.configManager.config.sidebarBgColor,
-          );
-        } else if (
-          callbackMethod &&
-          typeof ConfigApplier[callbackMethod] === "function"
-        ) {
-          ConfigApplier[callbackMethod](this.configManager.config[configKey]);
-        } else if (elementSelector) {
-          const element = document.querySelector(elementSelector);
-          if (element) {
-            element.textContent = this.configManager.config[configKey];
-          }
-        }
-      }
-    }
+    this.iconPicker.createArranger("logo-icon-arranger", "logoIcon", {
+      maxIcons: 1,
+    });
+    this.iconPicker.createArranger("nav-icons-arranger", "navIconsBlack");
+    this.iconPicker.createArranger("bottom-icon-arranger", "bottomIcon", {
+      maxIcons: 1,
+    });
   }
 
   bindWindowTitleSettings() {
@@ -283,18 +232,10 @@ class EventBinder {
   }
 
   bindTitleBarButtonSettings() {
-    const titleBarButtonsInput = document.getElementById(
-      "titlebar-buttons-input",
+    this.iconPicker.createArranger(
+      "titlebar-buttons-arranger",
+      "titleBarButtons",
     );
-    if (titleBarButtonsInput) {
-      titleBarButtonsInput.value =
-        this.configManager.config.titleBarButtons ||
-        "&#xE921;,&#xE923;,&#xE8BB;";
-      titleBarButtonsInput.addEventListener("change", (e) => {
-        this.configManager.config.titleBarButtons = e.target.value;
-        this.configManager.scheduleSaveConfig();
-      });
-    }
   }
 
   bindPanelControls() {

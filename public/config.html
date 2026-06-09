@@ -142,19 +142,20 @@
 
                     <div class="config-section">
                         <label class="config-label">顶部Logo Icon</label>
-                        <input type="text" class="config-input" id="logo-icon-input" placeholder="例如: &#xE700" maxlength="1">
-                        <div class="config-hint">使用 Segoe MDL2 Assets 字体的 Unicode 字符。参见 关于 >> 使用说明</div>
+                        <div id="logo-icon-arranger"></div>
+                        <div class="config-hint">选择一个图标作为侧栏顶部 Logo</div>
                     </div>
 
                     <div class="config-section">
-                        <label class="config-label">导航栏Icon (用逗号分隔)</label>
-                        <input type="text" class="config-input" id="nav-icons-input" placeholder="例如: &#xE7FC,&#xE8BD,&#xE90B">
-                        <div class="config-hint">每个icon占一个位置，逗号表示空位<br>不建议超过7个icon</div>
+                        <label class="config-label">导航栏Icon</label>
+                        <div id="nav-icons-arranger"></div>
+                        <div class="config-hint">拖拽卡片可调整顺序，不建议超过7个icon</div>
                     </div>
 
                     <div class="config-section">
                         <label class="config-label">底部Icon</label>
-                        <input type="text" class="config-input" id="bottom-icon-input" placeholder="例如: &#xE713" maxlength="1">
+                        <div id="bottom-icon-arranger"></div>
+                        <div class="config-hint">选择一个图标作为侧栏底部图标</div>
                     </div>
                 </div>
 
@@ -205,9 +206,9 @@
                         </div>
 
                         <div class="config-section">
-                            <label class="config-label">标题栏按钮（用逗号分隔）</label>
-                            <input type="text" class="config-input" id="titlebar-buttons-input" placeholder="例如: &#xE921;,&#xE923;,&#xE8BB;">
-                            <div class="config-hint">使用 Segoe MDL2 Assets 字体的 Unicode 字符</div>
+                            <label class="config-label">标题栏按钮</label>
+                            <div id="titlebar-buttons-arranger"></div>
+                            <div class="config-hint">拖拽卡片可调整按钮顺序</div>
                         </div>
                     </div>
                 </div>
@@ -269,6 +270,7 @@
     <script src="js/utils/api-service.js"></script>
     <script src="js/utils/update-checker.js"></script>
     <script src="js/utils/config-applier.js"></script>
+    <script src="js/utils/icon-picker.js"></script>
     <script src="js/utils/event-binder.js"></script>
     <script src="js/config-manager.js"></script>
 </body>

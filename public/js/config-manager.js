@@ -53,6 +53,7 @@ class ConfigManager {
 
   setupUI() {
     const eventBinder = new EventBinder(this);
+    this.iconPicker = eventBinder.iconPicker;
     eventBinder.bindConfigEvents();
     eventBinder.bindProfileEvents();
     ConfigApplier.applyConfig(this.config);
@@ -332,14 +333,12 @@ class ConfigManager {
       sidebarBgColorValue.value = ColorUtils.rgbToHex(c.sidebarBgColor || "rgb(20, 20, 30)");
     }
 
-    const logoIcon = get("logo-icon-input");
-    if (logoIcon) logoIcon.value = c.logoIcon || "";
-
-    const navIcons = get("nav-icons-input");
-    if (navIcons) navIcons.value = c.navIconsBlack || "";
-
-    const bottomIcon = get("bottom-icon-input");
-    if (bottomIcon) bottomIcon.value = c.bottomIcon || "";
+    if (this.iconPicker) {
+      this.iconPicker.syncArrangerFromConfig("logo-icon-arranger", c.logoIcon || "");
+      this.iconPicker.syncArrangerFromConfig("nav-icons-arranger", c.navIconsBlack || "");
+      this.iconPicker.syncArrangerFromConfig("bottom-icon-arranger", c.bottomIcon || "");
+      this.iconPicker.syncArrangerFromConfig("titlebar-buttons-arranger", c.titleBarButtons || "");
+    }
 
     const windowTitle = get("window-title-input");
     if (windowTitle) windowTitle.value = c.windowTitle || "";
@@ -349,9 +348,6 @@ class ConfigManager {
 
     const windowTitleFontSize = get("window-title-font-size-input");
     if (windowTitleFontSize) windowTitleFontSize.value = c.windowTitleFontSize || 18;
-
-    const titleBarButtons = get("titlebar-buttons-input");
-    if (titleBarButtons) titleBarButtons.value = c.titleBarButtons || "";
 
     const toggleTitlebar = get("toggle-titlebar");
     if (toggleTitlebar) {

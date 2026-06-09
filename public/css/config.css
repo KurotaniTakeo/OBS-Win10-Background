@@ -275,14 +275,231 @@ html {
   box-shadow: none;
 }
 
-/* Icon 输入框特殊样式 */
-#logo-icon-input,
-#nav-icons-input,
-#bottom-icon-input,
-#titlebar-buttons-input {
-  font-family: "Segoe MDL2 Assets", monospace, "Segoe UI", sans-serif;
+/* ========== 图标排列器 ========== */
+.icon-arranger-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  min-height: 56px;
+  background-color: rgb(30, 30, 30);
+  border: 3px solid #666666;
+  align-items: center;
+  transition: border-color 0.2s ease;
+}
+
+.icon-arranger-wrapper:hover {
+  border-color: #888888;
+}
+
+.icon-arranger-placeholder {
+  font-size: 13px;
+  color: #666666;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 图标卡片 */
+.icon-card {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2d2d2d;
+  border: 2px solid #555555;
+  cursor: grab;
+  position: relative;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.icon-card:hover {
+  border-color: var(--theme-color, #0078d4);
+  background: #3a3a3a;
+}
+
+.icon-card:active {
+  cursor: grabbing;
+}
+
+.icon-card.dragging {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.icon-card-glyph {
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  color: #e0e0e0;
+  pointer-events: none;
+}
+
+/* 卡片删除按钮 */
+.icon-card-delete {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 18px;
+  height: 18px;
+  background: #e81123;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+  display: none;
+  padding: 0;
+  z-index: 2;
+}
+
+.icon-card:hover .icon-card-delete {
+  display: block;
+}
+
+.icon-card-delete:hover {
+  background: #ff3344;
+}
+
+/* 添加按钮 */
+.icon-arranger-add {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 2px dashed #666666;
+  color: #888888;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 300;
+}
+
+.icon-arranger-add:hover {
+  border-color: var(--theme-color, #0078d4);
+  color: var(--theme-color, #0078d4);
+  background: rgba(0, 120, 212, 0.08);
+}
+
+/* ========== 图标选择器弹出层 ========== */
+.icon-picker-popover {
+  position: fixed;
+  z-index: 10000;
+  width: 360px;
+  max-height: 420px;
+  background: #2d2d2d;
+  border: 3px solid #666666;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.icon-picker-search-wrapper {
+  padding: 8px;
+  border-bottom: 1px solid #444444;
+  flex-shrink: 0;
+}
+
+.icon-picker-search {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgb(30, 30, 30);
+  border: 2px solid #666666;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: "Segoe UI", sans-serif;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.icon-picker-search:focus {
+  border-color: var(--theme-color, #0078d4);
+}
+
+.icon-picker-search::placeholder {
+  color: #888888;
+}
+
+.icon-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 2px;
+  overflow-y: auto;
+  padding: 6px;
+  flex: 1;
+}
+
+.icon-picker-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.icon-picker-grid::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.icon-picker-grid::-webkit-scrollbar-thumb {
+  background: #555555;
+}
+
+.icon-picker-grid::-webkit-scrollbar-thumb:hover {
+  background: #777777;
+}
+
+.icon-picker-item {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 4px 2px;
+  transition: all 0.1s ease;
+  gap: 2px;
+  position: relative;
+}
+
+.icon-picker-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--theme-color, #0078d4);
+}
+
+.icon-picker-item:active {
+  background: var(--theme-color, #0078d4);
+}
+
+.icon-picker-item-glyph {
+  font-family: "Segoe MDL2 Assets", "Segoe UI", sans-serif;
   font-size: 20px;
-  text-align: left;
+  line-height: 1;
+  color: #e0e0e0;
+  pointer-events: none;
+}
+
+.icon-picker-item:hover .icon-picker-item-glyph {
+  color: #ffffff;
+}
+
+.icon-picker-item:active .icon-picker-item-glyph {
+  color: #ffffff;
+}
+
+/* 选择器底部信息栏 */
+.icon-picker-info {
+  padding: 6px 10px;
+  border-top: 1px solid #444444;
+  font-size: 12px;
+  color: #888888;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 /* ========== 颜色选择器 ========== */

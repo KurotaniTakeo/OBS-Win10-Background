@@ -2,6 +2,15 @@
  * 配置应用和UI渲染 - 处理配置的应用和UI更新
  */
 class ConfigApplier {
+  static _decodeHtmlEntity(str) {
+    if (!str) return str;
+    const match = str.match(/^&#x([0-9A-Fa-f]+);$/);
+    if (match) {
+      return String.fromCodePoint(parseInt(match[1], 16));
+    }
+    return str;
+  }
+
   /**
    * 应用配置
    * @param {Object} config - 配置对象
@@ -21,7 +30,7 @@ class ConfigApplier {
 
       // 应用到所有输入框和标签
       const inputs = document.querySelectorAll(
-        ".config-input:not(#logo-icon-input):not(#nav-icons-input):not(#bottom-icon-input):not(#titlebar-buttons-input)",
+        ".config-input:not(.icon-arranger-wrapper .config-input)",
       );
       inputs.forEach((input) => {
         input.style.fontFamily = config.fontFamily;
@@ -87,7 +96,7 @@ class ConfigApplier {
     // 应用icon配置
     const logoIcon = document.getElementById("logo-icon");
     if (logoIcon) {
-      logoIcon.textContent = config.logoIcon || "\uE700";
+      logoIcon.textContent = ConfigApplier._decodeHtmlEntity(config.logoIcon) || "\uE700";
     }
 
     // 动态生成导航栏icons（传递侧栏背景色）
@@ -97,7 +106,7 @@ class ConfigApplier {
     // 应用底部icon
     const bottomIcon = document.getElementById("bottom-icon");
     if (bottomIcon) {
-      bottomIcon.textContent = config.bottomIcon || "\uE713";
+      bottomIcon.textContent = ConfigApplier._decodeHtmlEntity(config.bottomIcon) || "\uE713";
     }
 
     // 应用窗口标题
@@ -268,7 +277,7 @@ class ConfigApplier {
       const button = document.createElement("button");
       button.className = "nav-icon-btn";
       button.id = `nav-icon-dynamic-${index}`;
-      button.textContent = icon;
+      button.textContent = ConfigApplier._decodeHtmlEntity(icon);
       button.style.fontFamily = "'Segoe MDL2 Assets', 'Segoe UI', sans-serif";
       button.style.fontSize = "36px";
       button.style.color = "#ffffff";
