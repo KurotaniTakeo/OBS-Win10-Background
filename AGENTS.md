@@ -19,10 +19,10 @@ On Windows you can also double-click `启动服务器.bat`.
 - **Entrypoint:** `src/server.js` — raw `http` module, no framework
 - **Frontend:** `public/` — vanilla JS, no bundler, no build step
 - **Server modules:**
-  - `src/routes/` — API handlers (`config.js`, `version.js`)
+  - `src/routes/` — API handlers (`config.js`, `version.js`, `update.js`)
   - `src/middleware/` — static file serving (`static.js`)
   - `src/config/` — config manager + app info (`manager.js`, `app-info.js`)
-  - `src/utils/` — shared helpers (`file.js`, `http.js`, `version.js`)
+  - `src/utils/` — shared helpers (`file.js`, `http.js`, `version.js`, `app-path.js`, `restart.js`)
 - **Scene page:** `/` → `public/index.html` — OBS browser source (display only)
 - **Config page:** `/config` → `public/config.html` — full-page settings UI
 
@@ -37,6 +37,8 @@ On Windows you can also double-click `启动服务器.bat`.
 - `POST /api/profiles/duplicate` — duplicate (`{ profileId }`)
 - `POST /api/profiles/delete` — delete (`{ profileId }`)
 - `GET /api/version` — app version + repo URL
+- `GET /api/check-update` — check for new release on GitHub
+- `POST /api/apply-update` — download + apply update (uses adm-zip)
 
 ## Config format
 
@@ -64,10 +66,11 @@ Old flat config files (root dir, `src/config/`) are auto-migrated on first run.
 2. `utils/notification-manager.js`
 3. `utils/dialog-manager.js`
 4. `utils/api-service.js`
-5. `utils/update-checker.js` ⚠️ referenced in HTML but file is missing
+5. `utils/update-checker.js`
 6. `utils/config-applier.js`
-7. `utils/event-binder.js`
-8. `config-manager.js` (last — instantiates `ConfigManager` globally)
+7. `utils/icon-picker.js`
+8. `utils/event-binder.js`
+9. `config-manager.js` (last — instantiates `ConfigManager` globally)
 
 ## Key shortcuts (config page only)
 
@@ -85,3 +88,4 @@ Only `Ctrl+S` is implemented. The README lists older shortcuts (Ctrl+K, Esc, etc
 - No tests, no linter, no typechecker, no CI configured in this repo
 - CSS variable `background-color: transparent` is required for OBS chroma key
 - `configs/` dir and `configs/config.json` are gitignored; only `configs/config.default.json` is tracked
+- `npm run build` packages as a standalone Windows exe via `pkg` (output to `dist/`)

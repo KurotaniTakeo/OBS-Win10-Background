@@ -7,7 +7,6 @@ const http = require("http");
 const path = require("path");
 const fs = require("fs");
 const { exec } = require("child_process");
-const { spawn } = require("child_process");
 const { ensureConfigDir, getConfigDir } = require("./config/manager");
 const { handleVersionRequest } = require("./routes/version");
 const {
@@ -22,9 +21,11 @@ const {
   handleDeleteProfile,
 } = require("./routes/config");
 const { handleStaticFile } = require("./middleware/static");
+const { handleCheckUpdate, handleApplyUpdate } = require("./routes/update");
+const { scheduleServerRestart } = require("./utils/restart");
 
-// 项目根目录
-const ROOT_DIR = path.resolve(__dirname, "..");
+// 项目根目录（兼容 pkg 打包环境）
+const { ROOT_DIR } = require("./utils/app-path");
 
 // 服务器配置
 const DEFAULT_PORT = 3000;
@@ -40,25 +41,6 @@ function setCorsHeaders(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-}
-
-/**
- * 重启服务器
- */
-function scheduleServerRestart(server) {
-  setTimeout(() => {
-    server.close(() => {
-      const nodePath = process.execPath;
-      const scriptPath = __filename;
-      const child = spawn(nodePath, [scriptPath], {
-        cwd: process.cwd(),
-        detached: true,
-        stdio: "ignore",
-      });
-      child.unref();
-      process.exit(0);
-    });
-  }, 800);
 }
 
 // 创建HTTP服务器
@@ -134,6 +116,17 @@ const server = http.createServer((req, res) => {
 
   if (pathname === "/api/profiles/delete" && req.method === "POST") {
     handleDeleteProfile(req, res);
+    return;
+  }
+
+  // 更新管理
+  if (pathname === "/api/check-update" && req.method === "GET") {
+    handleCheckUpdate(req, res);
+    return;
+  }
+
+  if (pathname === "/api/apply-update" && req.method === "POST") {
+    handleApplyUpdate(req, res);
     return;
   }
 

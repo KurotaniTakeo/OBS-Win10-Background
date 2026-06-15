@@ -6,7 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT_DIR = path.dirname(path.dirname(__dirname));
+const { ROOT_DIR } = require("../utils/app-path");
 
 /**
  * 读取应用版本号

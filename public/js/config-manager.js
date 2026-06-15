@@ -144,14 +144,12 @@ class ConfigManager {
     try {
       const versionInfo = await this.apiService.getVersion();
       if (!versionInfo || !versionInfo.version) {
-        if (manual) {
-          this.notificationManager.showUpdateStatusNotification({
-            title: "检测失败",
-            message: "无法获取版本信息，请检查服务器",
-            themeColor: this.config?.themeColor || "#0078d4",
-            isError: true,
-          });
-        }
+        this.notificationManager.showUpdateStatusNotification({
+          title: "检测失败",
+          message: "无法获取版本信息，请检查服务器",
+          themeColor: this.config?.themeColor || "#0078d4",
+          isError: true,
+        });
         return;
       }
 
@@ -165,6 +163,12 @@ class ConfigManager {
       const result = await this.apiService.checkUpdate();
 
       if (result?.success && result?.hasUpdate) {
+        this.notificationManager.showUpdateStatusNotification({
+          title: "发现新版本",
+          message: `当前 ${result.currentVersion} → 最新 ${result.latestVersion}`,
+          themeColor,
+        });
+
         if (!this.updatePromptShown) {
           this.updatePromptShown = true;
           const shouldUpdate = await DialogManager.showUpdateConfirmDialog({
@@ -180,48 +184,36 @@ class ConfigManager {
             });
           }
         }
-      }
-
-      if (manual) {
-        if (result?.success && !result?.hasUpdate) {
+      } else if (result?.success && !result?.hasUpdate) {
+        this.notificationManager.showUpdateStatusNotification({
+          title: "已是最新",
+          message: `当前版本 ${result.currentVersion} 已是最新版本`,
+          themeColor,
+        });
+      } else if (!result?.success) {
+        if (!result?.noRelease) {
           this.notificationManager.showUpdateStatusNotification({
-            title: "已是最新",
-            message: `当前版本 ${result.currentVersion} 已是最新版本`,
+            title: "检测失败",
+            message: result?.message || "无法连接更新服务，请稍后再试",
             themeColor,
+            isError: true,
           });
-        } else if (!result?.success) {
-          if (!result?.noRelease) {
-            this.notificationManager.showUpdateStatusNotification({
-              title: "检测失败",
-              message: result?.message || "无法连接更新服务，请稍后再试",
-              themeColor,
-              isError: true,
-            });
-          } else {
-            this.notificationManager.showUpdateStatusNotification({
-              title: "暂无更新",
-              message: "仓库暂无可用更新",
-              themeColor,
-            });
-          }
-        } else if (result?.hasUpdate) {
+        } else {
           this.notificationManager.showUpdateStatusNotification({
-            title: "发现新版本",
-            message: `当前 ${result.currentVersion} → 最新 ${result.latestVersion}`,
+            title: "暂无更新",
+            message: "仓库暂无可用更新",
             themeColor,
           });
         }
       }
     } catch (error) {
       console.warn("⚠️ 更新检查异常:", error.message);
-      if (manual) {
-        this.notificationManager.showUpdateStatusNotification({
-          title: "检测失败",
-          message: "更新检查异常，请稍后再试",
-          themeColor: this.config?.themeColor || "#0078d4",
-          isError: true,
-        });
-      }
+      this.notificationManager.showUpdateStatusNotification({
+        title: "检测失败",
+        message: "更新检查异常，请稍后再试",
+        themeColor: this.config?.themeColor || "#0078d4",
+        isError: true,
+      });
     }
   }
 

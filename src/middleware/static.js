@@ -6,8 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT_DIR = path.dirname(path.dirname(__dirname));
-const PUBLIC_DIR = path.join(ROOT_DIR, "public");
+const { ROOT_DIR, PUBLIC_DIR } = require("../utils/app-path");
 const DOCS_DIR = path.join(ROOT_DIR, "docs");
 
 // MIME 类型映射

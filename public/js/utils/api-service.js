@@ -288,4 +288,50 @@ class ApiService {
       throw error;
     }
   }
+
+  /**
+   * 检查是否有可用更新
+   * @returns {Promise<Object>} 更新检查结果
+   */
+  async checkUpdate() {
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/check-update?t=${Date.now()}`,
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.warn("⚠️ 检查更新失败:", error.message);
+      return { success: false, message: error.message };
+    }
+  }
+
+  /**
+   * 应用更新
+   * @param {Object} params - 更新参数
+   * @param {string} params.repo - 仓库路径 (owner/repo)
+   * @returns {Promise<Object>} 更新结果
+   */
+  async applyUpdate({ repo }) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/apply-update`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ repo }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ 应用更新失败:", error);
+      throw error;
+    }
+  }
 }
